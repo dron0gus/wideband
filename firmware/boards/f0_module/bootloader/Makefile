@@ -123,7 +123,7 @@ CPPSRC = $(ALLCPPSRC) \
   bootloader.cpp \
   ../port_shared.cpp \
   $(SRCDIR)/shared/flash.cpp \
-  $(SRCDIR)/shared/crc.cpp
+  $(SRCDIR)/util/math/crc.cpp
 
 # List ASM source files here.
 ASMSRC = $(ALLASMSRC)
@@ -132,7 +132,7 @@ ASMSRC = $(ALLASMSRC)
 ASMXSRC = $(ALLXASMSRC)
 
 # Inclusion directories.
-INCDIR = $(CONFDIR) $(ALLINC) $(SRCDIR)/shared/ \
+INCDIR = $(CONFDIR) $(ALLINC) $(SRCDIR)/shared/ $(SRCDIR)/util/math/ \
   ../io ../..
 
 # Define C warning options here.
