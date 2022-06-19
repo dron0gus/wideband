@@ -3,6 +3,8 @@
 #include "wideband_config.h"
 #include "thread_controller.h"
 
+#ifdef EGT_SPI_PORT
+
 #define MAX31855_THREAD_STACK 	(512)
 #define MAX31855_THREAD_PRIO	(NORMALPRIO + 1)
 
@@ -31,3 +33,5 @@ public:
 };
 
 extern Max31855Thread EgtThread;
+
+#endif

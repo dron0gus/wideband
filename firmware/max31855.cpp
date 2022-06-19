@@ -7,7 +7,7 @@
 
 #include "max31855.h"
 
-#ifdef HAL_USE_SPI
+#ifdef EGT_SPI_PORT
 
 static SPIConfig spi_config[2] =
 {
