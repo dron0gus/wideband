@@ -29,6 +29,7 @@ void HeaterControllerBase::Configure(float targetTempC, float targetEsr)
     m_preheatTimer.reset();
     m_warmupTimer.reset();
     m_batteryStableTimer.reset();
+    m_closedLoopStableTimer.reset();
 }
 
 bool HeaterControllerBase::IsRunningClosedLoop() const
@@ -115,6 +116,7 @@ HeaterState HeaterControllerBase::GetNextState(HeaterState currentState, HeaterA
         case HeaterState::WarmupRamp:
             if (sensorTemp > closedLoopTemp)
             {
+                m_closedLoopStableTimer.reset();
                 return HeaterState::ClosedLoop;
             }
             else if (m_warmupTimer.hasElapsedSec(m_warmupTimeSec))
@@ -136,15 +138,21 @@ HeaterState HeaterControllerBase::GetNextState(HeaterState currentState, HeaterA
                 m_underheatTimer.reset();
             }
 
-            if (m_overheatTimer.hasElapsedSec(0.5f))
-            {
-                SetFault(ch, Fault::SensorOverheat);
-                return HeaterState::Stopped;
-            }
-            else if (m_underheatTimer.hasElapsedSec(0.5f))
-            {
-                SetFault(ch, Fault::SensorUnderheat);
-                return HeaterState::Stopped;
+            if (m_closedLoopStableTimer.hasElapsedSec(HEATER_CLOSED_LOOP_STAB_TIME)) {
+                if (m_overheatTimer.hasElapsedSec(0.5f))
+                {
+                    SetFault(ch, Fault::SensorOverheat);
+                    return HeaterState::Stopped;
+                }
+                else if (m_underheatTimer.hasElapsedSec(0.5f))
+                {
+                    SetFault(ch, Fault::SensorUnderheat);
+                    return HeaterState::Stopped;
+                }
+            } else {
+                // give some time for stabilization...
+                // looks like heavy ramped Ipump affects sensorTemp measure
+                // and right after switch to closed loop sensorTemp drops below underhead threshold
             }
 
             break;

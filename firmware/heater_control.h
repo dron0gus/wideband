@@ -68,6 +68,7 @@ private:
     Timer m_batteryStableTimer;
     Timer m_preheatTimer;
     Timer m_warmupTimer;
+    Timer m_closedLoopStableTimer;
 
     // Stores the time since a non-over/underheat condition
     // If the timer reaches a threshold, an over/underheat has
