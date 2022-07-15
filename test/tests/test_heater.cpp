@@ -131,6 +131,9 @@ TEST(HeaterStateMachine, ClosedLoop)
     Timer::advanceMockTime(10e6);
     EXPECT_EQ(HeaterState::ClosedLoop, dut.GetNextState(HeaterState::ClosedLoop, HeaterAllow::Allowed, 12, 780));
 
+    // Skip 5 sec stabilizaiton time
+    Timer::setMockTime(5.1e6);
+
     // Allow too hot briefly
     EXPECT_EQ(HeaterState::ClosedLoop, dut.GetNextState(HeaterState::ClosedLoop, HeaterAllow::Allowed, 12, 1000));
     Timer::advanceMockTime(0.1e6);
