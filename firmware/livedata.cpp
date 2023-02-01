@@ -16,6 +16,7 @@ static livedata_afr_s livedata_afr[AFR_CHANNELS];
 
 void SamplingUpdateLiveData()
 {
+    float vbat = 0;
     for (int ch = 0; ch < AFR_CHANNELS; ch++)
     {
         volatile struct livedata_afr_s *data = &livedata_afr[ch];
@@ -34,9 +35,11 @@ void SamplingUpdateLiveData()
         data->esr = sampler.GetSensorInternalResistance();
         data->fault = (uint8_t)GetCurrentFault(ch);
         data->heaterState = (uint8_t)GetHeaterState(ch);
+        if (sampler.GetInternalHeaterVoltage(ch) > vbat)
+            vbat = sampler.GetInternalHeaterVoltage(ch);
     }
 
-    livedata_common.vbatt = GetSampler(0).GetInternalHeaterVoltage();
+    livedata_common.vbatt = vbat;
 }
 
 template<>
