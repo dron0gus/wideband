@@ -125,6 +125,9 @@ HeaterState HeaterControllerBase::GetNextState(HeaterState currentState, HeaterA
             else if (m_warmupTimer.hasElapsedSec(m_warmupTimeSec))
             {
                 SetStatus(ch, Status::SensorDidntHeat);
+                // retry after timeout
+                m_retryTime = HEATER_DIDNOTHEAT_RETRY_TIMEOUT;
+                m_retryTimer.reset();
                 return HeaterState::Stopped;
             }
 
@@ -147,11 +150,17 @@ HeaterState HeaterControllerBase::GetNextState(HeaterState currentState, HeaterA
                 if (m_overheatTimer.hasElapsedSec(0.5f))
                 {
                     SetStatus(ch, Status::SensorOverheat);
+                    // retry after timeout
+                    m_retryTime = HEATER_OVERHEAT_RETRY_TIMEOUT;
+                    m_retryTimer.reset();
                     return HeaterState::Stopped;
                 }
                 else if (m_underheatTimer.hasElapsedSec(0.5f))
                 {
                     SetStatus(ch, Status::SensorUnderheat);
+                    // retry after timeout
+                    m_retryTime = HEATER_UNDERHEAT_RETRY_TIMEOUT;
+                    m_retryTimer.reset();
                     return HeaterState::Stopped;
                 }
             } else {
@@ -162,6 +171,9 @@ HeaterState HeaterControllerBase::GetNextState(HeaterState currentState, HeaterA
 
             break;
         case HeaterState::Stopped:
+            if ((m_retryTime) && (m_retryTimer.hasElapsedSec(m_retryTime))) {
+                return HeaterState::Preheat;
+            }
             break;
     }
 
