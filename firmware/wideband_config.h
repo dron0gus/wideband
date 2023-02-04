@@ -45,6 +45,11 @@
 #define HEATER_CLOSED_LOOP_STAB_TIME 5
 
 #define HEATER_BATTERY_STAB_TIME 0.5f
+
+#define HEATER_DIDNOTHEAT_RETRY_TIMEOUT 30
+#define HEATER_OVERHEAT_RETRY_TIMEOUT 60
+#define HEATER_UNDERHEAT_RETRY_TIMEOUT 30
+
 // minimal battery voltage to start heating without CAN command
 #define HEATER_BATTERY_ON_VOLTAGE	9.5
 // mininal battery voltage to continue heating

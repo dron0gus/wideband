@@ -123,6 +123,9 @@ HeaterState HeaterControllerBase::GetNextState(HeaterState currentState, HeaterA
             else if (m_warmupTimer.hasElapsedSec(m_warmupTimeSec))
             {
                 SetFault(ch, Fault::SensorDidntHeat);
+                // retry after timeout
+                m_retryTime = HEATER_DIDNOTHEAT_RETRY_TIMEOUT;
+                m_retryTimer.reset();
                 return HeaterState::Stopped;
             }
 
@@ -143,11 +146,17 @@ HeaterState HeaterControllerBase::GetNextState(HeaterState currentState, HeaterA
                 if (m_overheatTimer.hasElapsedSec(0.5f))
                 {
                     SetFault(ch, Fault::SensorOverheat);
+                    // retry after timeout
+                    m_retryTime = HEATER_OVERHEAT_RETRY_TIMEOUT;
+                    m_retryTimer.reset();
                     return HeaterState::Stopped;
                 }
                 else if (m_underheatTimer.hasElapsedSec(0.5f))
                 {
                     SetFault(ch, Fault::SensorUnderheat);
+                    // retry after timeout
+                    m_retryTime = HEATER_UNDERHEAT_RETRY_TIMEOUT;
+                    m_retryTimer.reset();
                     return HeaterState::Stopped;
                 }
             } else {
@@ -155,9 +164,15 @@ HeaterState HeaterControllerBase::GetNextState(HeaterState currentState, HeaterA
                 // looks like heavy ramped Ipump affects sensorTemp measure
                 // and right after switch to closed loop sensorTemp drops below underhead threshold
             }
+            // reset fault
+            SetFault(ch, Fault::None);
 
             break;
         case HeaterState::Stopped:
+            if ((m_retryTime) && (m_retryTimer.hasElapsedSec(m_retryTime))) {
+                return HeaterState::Preheat;
+            }
+            break;
         case HeaterState::NoHeaterSupply:
             /* nop */
             break;
