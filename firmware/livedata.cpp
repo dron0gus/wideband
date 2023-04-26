@@ -30,6 +30,7 @@ void SamplingUpdateLiveData()
         data->temperature = sampler.GetSensorTemperature() * 10;
         data->heaterSupplyVoltage = voltage * 100;
         data->nernstDc = sampler.GetNernstDc() * 1000;
+        data->nernstV = (int16_t)(sampler.GetNernstV() * 1000.0);
         data->nernstAc = sampler.GetNernstAc() * 1000;
         data->pumpCurrentTarget = GetPumpCurrent(ch);
         data->pumpCurrentMeasured = sampler.GetPumpNominalCurrent();
