@@ -29,6 +29,11 @@ float Sampler::GetNernstAc() const
     return nernstAc;
 }
 
+float Sampler::GetNernstV() const
+{
+    return nernstV;
+}
+
 float Sampler::GetPumpNominalCurrent() const
 {
     // Gain is 10x, then a 61.9 ohm resistor
@@ -104,6 +109,7 @@ void Sampler::ApplySample(AnalogChannelResult& result, float virtualGroundVoltag
     // Compute AC (difference) and DC (average) components
     float nernstAcLocal = f_abs(r2_opposite_phase - r_2);
     nernstDc = (r2_opposite_phase + r_2) / 2;
+    nernstV = result.NernstVoltage;
 
     nernstAc =
         (1 - ESR_SENSE_ALPHA) * nernstAc +
