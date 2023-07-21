@@ -224,11 +224,13 @@ void HeaterControllerBase::Update(const ISampler& sampler, HeaterAllow heaterAll
     float sensorEsr = sampler.GetSensorInternalResistance();
     float sensorTemperature = sampler.GetSensorTemperature();
 
-    // If we haven't heard from the ECU, use the internally sensed
-    // battery voltage instead of voltage over CAN.
-    float heaterSupplyVoltage = heaterAllowState == HeaterAllow::Unknown
-                                ? sampler.GetInternalHeaterVoltage()
-                                : GetRemoteBatteryVoltage();
+    #ifdef HEATER_INPUT_DIVIDER
+        // if board has ability to measure heater supply localy - use it
+        float heaterSupplyVoltage = sampler.GetInternalHeaterVoltage();
+    #else
+        // this board rely on measured voltage from ECU
+        float heaterSupplyVoltage = GetRemoteBatteryVoltage();
+    #endif
 
     // Run the state machine
     heaterState = GetNextState(heaterState, heaterAllowState, heaterSupplyVoltage, sensorTemperature);
