@@ -50,10 +50,10 @@
 #define HEATER_OVERHEAT_RETRY_TIMEOUT 60
 #define HEATER_UNDERHEAT_RETRY_TIMEOUT 30
 
-// minimal battery voltage to start heating without CAN command
-#define HEATER_BATTERY_ON_VOLTAGE	9.5
-// mininal battery voltage to continue heating
-#define HEATER_BATTETY_OFF_VOLTAGE  8.5
+// minimal heater voltage to start heating without CAN command
+#define HEATER_SUPPLY_ON_VOLTAGE 9.5
+// mininal heater voltage to continue heating
+#define HEATER_SUPPLY_OFF_VOLTAGE 8.5
 
 // *******************************
 // Start driving the pump just before we're at target temperature
