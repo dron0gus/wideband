@@ -40,6 +40,7 @@ private:
     float nernstAc = 0;
     float nernstDc = 0;
     float pumpCurrentSenseVoltage = 0;
+    int nernstClamped = 0;
 
 #ifdef HEATER_INPUT_DIVIDER
     float internalHeaterVoltage = 0;

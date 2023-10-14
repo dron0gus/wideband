@@ -21,6 +21,7 @@ TEST(Sampler, TestDc)
     AnalogChannelResult data;
     data.NernstVoltage = 0.45f;
     data.PumpCurrentVoltage = 1.75f;
+    data.NernstClamped = false;
     constexpr float virtualGroundVoltage = 1.65f;
 
     for (size_t i = 0; i < 5000; i++)
@@ -41,10 +42,12 @@ TEST(Sampler, TestAc)
     AnalogChannelResult dataLow;
     dataLow.NernstVoltage = 0.45f - 0.1f;
     dataLow.PumpCurrentVoltage = 1.75f;
+    dataLow.NernstClamped = false;
 
     AnalogChannelResult dataHigh;
     dataHigh.NernstVoltage = 0.45f + 0.1f;
     dataHigh.PumpCurrentVoltage = 1.75f;
+    dataHigh.NernstClamped = false;
 
     constexpr float virtualGroundVoltage = 1.65f;
 
