@@ -68,6 +68,7 @@ AnalogResult AnalogSampleFinish()
                 .NernstVoltage = AverageSamples(adcBuffer, 0) * (1.0 / NERNST_INPUT_GAIN),
                 .PumpCurrentVoltage = AverageSamples(adcBuffer, 1),
                 .HeaterSupplyVoltage = 0,
+                .NernstClamped = false,
             },
         },
         .VirtualGroundVoltageInt = AverageSamples(adcBuffer, 2),

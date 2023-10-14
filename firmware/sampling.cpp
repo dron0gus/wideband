@@ -82,6 +82,13 @@ float Sampler::GetSensorTemperature() const
 
 float Sampler::GetSensorInternalResistance() const
 {
+    if (nernstClamped)
+    {
+        // TODO: report disconnected error?
+        // Return some non-realistic value
+        return 10000;
+    }
+
     // Sensor is the lowside of a divider, top side is GetESRSupplyR(), and 3.3v AC pk-pk is injected
     float totalEsr = GetESRSupplyR() / (VCC_VOLTS / GetNernstAc() - 1);
 
@@ -98,6 +105,13 @@ constexpr float f_abs(float x)
 void Sampler::ApplySample(AnalogChannelResult& result, float virtualGroundVoltageInt)
 {
     float r_1 = result.NernstVoltage;
+
+    // If value is close to ADC limit...
+    if (result.NernstClamped) {
+        nernstClamped = 100;
+    } else if (nernstClamped) {
+        nernstClamped--;
+    }
 
     // r2_opposite_phase estimates where the previous sample would be had we not been toggling
     // AKA the absolute value of the difference between r2_opposite_phase and r2 is the amplitude

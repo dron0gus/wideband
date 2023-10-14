@@ -39,6 +39,7 @@ private:
     float nernstDc = 0;
     float nernstV = 0;
     float pumpCurrentSenseVoltage = 0;
+    int nernstClamped = 0;
 
 #ifdef BOARD_HAS_VOLTAGE_SENSE
     float internalHeaterVoltage = 0;
