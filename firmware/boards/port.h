@@ -13,6 +13,8 @@ struct AnalogChannelResult
     /* for dual version - this is voltage on Heater-, switches between zero and Vbatt with heater PWM,
         * used for both Vbatt measurement and Heater diagnostic */
     float HeaterSupplyVoltage;
+    /* If measured voltage is too close to ground or Vref assume value is clamped */
+    bool NernstClamped;
 };
 
 struct AnalogResult

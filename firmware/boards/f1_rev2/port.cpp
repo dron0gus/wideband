@@ -76,6 +76,8 @@ AnalogResult AnalogSample()
                  * Assume WBO supply voltage == heater supply voltage */
                 .HeaterSupplyVoltage = AverageSamples(adcBuffer, 3) / BATTERY_INPUT_DIVIDER,
                 /* .HeaterSupplyVoltage = AverageSamples(adcBuffer, 4) / HEATER_INPUT_DIVIDER, */
+                /* TODO: */
+                .NernstClamped = false,
             },
         },
         /* Rev 2 board has separate internal virtual ground = 3.3V / 2
