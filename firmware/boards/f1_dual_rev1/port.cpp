@@ -129,13 +129,18 @@ AnalogResult AnalogSample()
     res.VirtualGroundVoltageInt = HALF_VCC;
 
     for (int i = 0; i < AFR_CHANNELS; i++) {
+        res.ch[i].NernstClamped = false;
         float NernstRaw = AverageSamples(adcBuffer, (i == 0) ? 3 : 1);
-        if ((NernstRaw > 0.01) && (NernstRaw < (3.3 - 0.01))) {
+        if ((NernstRaw > 0.01) && (NernstRaw < (VCC_VOLTS - 0.01))) {
             /* not clamped */
             res.ch[i].NernstVoltage = (NernstRaw - NERNST_INPUT_OFFSET) * (1.0 / NERNST_INPUT_GAIN);
         } else {
             /* Clamped, use ungained input */
-            res.ch[i].NernstVoltage = AverageSamples(adcBuffer, (i == 0) ? 9 : 8) - HALF_VCC;
+            NernstRaw = AverageSamples(adcBuffer, (i == 0) ? 9 : 8) - HALF_VCC;
+            if ((NernstRaw > 0.01) && (NernstRaw < (VCC_VOLTS - 0.01))) {
+                res.ch[i].NernstClamped = true;
+            }
+            res.ch[i].NernstVoltage = NernstRaw;
         }
     }
     /* left */
