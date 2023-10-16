@@ -10,7 +10,7 @@
 	url = https://github.com/rusefi/kicad-libraries
 [submodule "firmware/ext/openblt"]
 	path = firmware/ext/openblt
-	url = https://github.com/rusefi/openblt
+	url = https://github.com/dron0gus/openblt
 [submodule "firmware/libfirmware"]
 	path = firmware/libfirmware
 	url = https://github.com/rusefi/libfirmware.git
