@@ -16,6 +16,11 @@
 #define LL_UART_TX_PIN				LL_GPIO_PIN_9
 #define LL_UART_RX_PIN				LL_GPIO_PIN_10
 
+// Communication - secondary (BT) UART
+#define SEC_UART_GPIO_PORT			GPIOC
+#define SEC_LL_UART_TX_PIN			LL_GPIO_PIN_10
+#define SEC_LL_UART_RX_PIN			LL_GPIO_PIN_11
+
 // Communication - CAN1
 #define CAN_GPIO_PORT				GPIOA
 #define LL_CAN_TX_PIN				LL_GPIO_PIN_12

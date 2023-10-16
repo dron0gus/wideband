@@ -128,6 +128,7 @@ void HAL_MspInit(void)
   /* GPIO ports clock enable. */
   LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_GPIOA);
   LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_GPIOB);
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_GPIOC);
 
 #if (BOOT_COM_RS232_ENABLE > 0)
   /* UART clock enable. */
@@ -142,6 +143,23 @@ void HAL_MspInit(void)
   GPIO_InitStruct.Mode = LL_GPIO_MODE_FLOATING;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
   LL_GPIO_Init(UART_GPIO_PORT, &GPIO_InitStruct);
+#if (BOOT_COM_RS232_CHANNELS_N > 1)
+  /* USART3 at PC10, PC11 */
+  /* UART clock enable. */
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART3);
+  /* UART TX and RX GPIO pin configuration. */
+  GPIO_InitStruct.Pin = SEC_LL_UART_TX_PIN;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  LL_GPIO_Init(SEC_UART_GPIO_PORT, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = SEC_LL_UART_RX_PIN;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_FLOATING;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
+  LL_GPIO_Init(SEC_UART_GPIO_PORT, &GPIO_InitStruct);
+  /* Enable remap: USART3 to PC10, PC11 */
+  AFIO->MAPR |= AFIO_MAPR_USART3_REMAP_0;
+#endif
 #endif
 
 #if (BOOT_COM_CAN_ENABLE > 0)
@@ -181,6 +199,7 @@ void HAL_MspDeInit(void)
   LL_RCC_DeInit();
   
   /* Deinit used GPIOs. */
+  LL_GPIO_DeInit(GPIOC);
   LL_GPIO_DeInit(GPIOB);
   LL_GPIO_DeInit(GPIOA);
 
@@ -191,10 +210,14 @@ void HAL_MspDeInit(void)
 
 #if (BOOT_COM_RS232_ENABLE > 0)
   /* UART clock disable. */
+#if (BOOT_COM_RS232_CHANNELS_N > 1)
+  LL_APB1_GRP1_DisableClock(LL_APB1_GRP1_PERIPH_USART3);
+#endif
   LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_USART1);
 #endif
 
   /* GPIO ports clock disable. */
+  LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_GPIOC);
   LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_GPIOB);
   LL_APB2_GRP1_DisableClock(LL_APB2_GRP1_PERIPH_GPIOA);
 
