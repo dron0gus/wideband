@@ -83,4 +83,40 @@ static inline const char* describeFault(Fault fault) {
     return "Unknown";
 }
 
+// AEMNet protocol
+
+#define AEMNET_UEGO_TX_PERIOD_MS    10
+#define AEMNET_UEGO_BASE_ID         0x00000180
+
+// 29 bit ID, 500kbs, rate 100 hz, endian big, DLC 8
+// ID: 0x180 .. 0x18f
+struct AemNetUEGOData
+{
+    // 0.0001 Lambda/bit, 0 to 6.5535 Lambda
+    uint16_t Lambda;
+    // 0.001 %/bit, -32.768% to 32.768%
+    uint16_t Oxygen;
+    // 0.1 V/bit, 0 to 25.5 Volts
+    uint8_t SystemVolts;
+    uint8_t reserved;
+    // [1] - Bosch LSU4.9 detected
+    // [5] - Free-Air cal in use
+    // [7] - Lambda data valid
+    uint8_t Flags;
+    // [6] - Sensor Fault
+    uint8_t Faults;
+};
+
+#define AEMNET_EGT_TX_PERIOD        50
+#define AEMNET_EGT_BASE_ID          0x000A0305
+
+// 29 bit ID, 500kbs, rate 20 hz, endian big, DLC 8
+// ID: 0x000A0305
+struct AemNetEgtData
+{
+    // 1 degC/bit, 0 to 65535 degC
+    uint16_t TemperatureC;
+    uint8_t pad[6];
+};
+
 } // namespace wbo
