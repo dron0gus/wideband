@@ -150,6 +150,7 @@ CPPSRC = $(ALLCPPSRC) \
           shared/flash.cpp \
           can.cpp \
           can_helper.cpp \
+          can_aemnet.cpp \
           fault.cpp \
           lambda_conversion.cpp \
           pwm.cpp \
