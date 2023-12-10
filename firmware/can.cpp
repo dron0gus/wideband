@@ -4,6 +4,7 @@
 
 #include "fault.h"
 #include "can_helper.h"
+#include "can_aemnet.h"
 #include "heater_control.h"
 #include "lambda_conversion.h"
 #include "sampling.h"
@@ -28,6 +29,10 @@ void CanTxThread(void*)
         for (int ch = 0; ch < AFR_CHANNELS; ch++)
         {
             SendCanForChannel(ch);
+        }
+
+        for (int ch = 0; ch < EGT_CHANNELS; ch++) {
+            SendCanEgtForChannel(ch);
         }
 
         prev = chThdSleepUntilWindowed(prev, chTimeAddX(prev, TIME_MS2I(WBO_TX_PERIOD_MS)));
@@ -202,4 +207,13 @@ void SendRusefiFormat(uint8_t ch)
 __attribute__((weak)) void SendCanForChannel(uint8_t ch)
 {
     SendRusefiFormat(ch);
+    SendAemNetUEGOFormat(ch);
+}
+
+__attribute__((weak)) void SendCanEgtForChannel(uint8_t ch)
+{
+#if (EGT_CHANNELS > 0)
+    // TODO: implement RusEFI protocol?
+    SendAemNetEGTFormat(ch);
+#endif
 }
