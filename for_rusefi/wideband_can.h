@@ -105,7 +105,7 @@ struct AemNetUEGOData
     uint8_t Flags;
     // [6] - Sensor Fault
     uint8_t Faults;
-};
+} __attribute__((packed));
 
 #define AEMNET_EGT_TX_PERIOD        50
 #define AEMNET_EGT_BASE_ID          0x000A0305
@@ -117,6 +117,6 @@ struct AemNetEgtData
     // 1 degC/bit, 0 to 65535 degC
     uint16_t TemperatureC;
     uint8_t pad[6];
-};
+} __attribute__((packed));
 
 } // namespace wbo
