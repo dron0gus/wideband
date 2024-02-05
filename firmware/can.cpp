@@ -9,6 +9,7 @@
 #include "sampling.h"
 #include "pump_dac.h"
 #include "port.h"
+#include "max3185x.h"
 
 // this same header is imported by rusEFI to get struct layouts and firmware version
 #include "../for_rusefi/wideband_can.h"
@@ -24,6 +25,10 @@ void CanTxThread(void*)
     {
         for (int ch = 0; ch < AFR_CHANNELS; ch++) {
             SendCanForChannel(ch);
+        }
+
+        for (int ch = 0; ch < EGT_CHANNELS; ch++) {
+            SendCanEgtForChannel(ch);
         }
 
         chThdSleepMilliseconds(WBO_TX_PERIOD_MS);
@@ -103,7 +108,7 @@ void CanRxThread(void*)
         else if ((frame.DLC == 0 || frame.DLC == 1) && CAN_ID(frame) == WB_BL_ENTER)
         {
             // If 0xFF (force update all) or our ID, reset to bootloader, otherwise ignore
-            if (frame.DLC == 0 || frame.data8[0] == 0xFF || frame.data8[0] == GetConfiguration()->CanIndexOffset)
+            if (frame.DLC == 0 || frame.data8[0] == 0xFF || frame.data8[0] == GetConfiguration()->afr[0].RusEfiIdOffset)
             {
                 SendAck();
 
@@ -116,8 +121,14 @@ void CanRxThread(void*)
         // Check if it's an "index set" message
         else if (frame.DLC == 1 && CAN_ID(frame) == WB_MSG_SET_INDEX)
         {
+            int offset = frame.data8[0];
             configuration = GetConfiguration();
-            configuration->CanIndexOffset = frame.data8[0];
+            for (int i = 0; i < AFR_CHANNELS; i++) {
+                configuration->afr[i].RusEfiIdOffset = offset + i * 2;
+            }
+            for (int i = 0; i < EGT_CHANNELS; i++) {
+                configuration->egt[i].RusEfiIdOffset = offset + i;
+            }
             SetConfiguration();
             SendAck();
         }
@@ -145,7 +156,7 @@ void InitCan()
 
 void SendRusefiFormat(uint8_t ch)
 {
-    auto baseAddress = WB_DATA_BASE_ADDR + 2 * (ch + configuration->CanIndexOffset);
+    auto baseAddress = WB_DATA_BASE_ADDR + configuration->afr[ch].RusEfiIdOffset;
 
     const auto& sampler = GetSampler(ch);
     const auto& heater = GetHeaterController(ch);
@@ -163,7 +174,7 @@ void SendRusefiFormat(uint8_t ch)
             pumpDuty > 0.1f && pumpDuty < 0.9f &&
             lambda > 0.6f;
 
-    {
+    if (configuration->afr[ch].RusEfiTx) {
         CanTxTyped<wbo::StandardData> frame(baseAddress + 0);
 
         // The same header is imported by the ECU and checked against this data in the frame
@@ -176,8 +187,8 @@ void SendRusefiFormat(uint8_t ch)
         frame.get().Valid = (heaterClosedLoop && lambdaValid) ? 0x01 : 0x00;
     }
 
-    {
-        CanTxTyped<wbo::DiagData> frame(baseAddress + 1);
+    if (configuration->afr[ch].RusEfiTxDiag) {
+        CanTxTyped<wbo::DiagData> frame(baseAddress + 1);;
 
         frame.get().Esr = sampler.GetSensorInternalResistance();
         frame.get().NernstDc = nernstDc * 1000;
@@ -187,8 +198,45 @@ void SendRusefiFormat(uint8_t ch)
     }
 }
 
+void SendAemNetUEGOForamt(uint8_t ch)
+{
+    auto id = AEMNET_UEGO_BASE_ID + configuration->afr[ch].AemNetIdOffset;
+
+    const auto& sampler = GetSampler(ch);
+
+    if (configuration->afr[ch].AemNetTx) {
+        CanTxTyped<wbo::AemNetUEGOData> frame(id, true);
+
+        frame.get().Lambda = GetLambda(ch) * 10000;
+        frame.get().Oxygen = 0; // TODO:
+        frame.get().SystemVolts = sampler.GetInternalHeaterVoltage();
+        frame.get().Flags =
+            ((configuration->sensorType == SensorType::LSU49) ? 0x02 : 0x00) |
+            ((LambdaIsValid(ch)) ? 0x80 : 0x00);
+        frame.get().Faults = 0; //TODO:
+    }
+}
+
+void SendAemNetEGTFormat(uint8_t ch)
+{
+    auto id = AEMNET_EGT_BASE_ID + configuration->egt[ch].AemNetIdOffset;
+
+    if (configuration->egt[ch].AemNetTx) {
+        CanTxTyped<wbo::AemNetEgtData> frame(id, true);
+
+        frame.get().TemperatureC = getEgtDrivers()[ch].temperature;
+    }
+}
+
 // Weak link so boards can override it
 __attribute__((weak)) void SendCanForChannel(uint8_t ch)
 {
     SendRusefiFormat(ch);
+    SendAemNetUEGOForamt(ch);
+}
+
+__attribute__((weak)) void SendCanEgtForChannel(uint8_t ch)
+{
+    // TODO: implement RusEFI protocol?
+    SendAemNetEGTFormat(ch);
 }
