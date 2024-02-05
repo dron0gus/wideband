@@ -217,6 +217,7 @@ void SendAemNetUEGOForamt(uint8_t ch)
     }
 }
 
+#if (EGT_CHANNELS > 0)
 void SendAemNetEGTFormat(uint8_t ch)
 {
     auto id = AEMNET_EGT_BASE_ID + configuration->egt[ch].AemNetIdOffset;
@@ -227,6 +228,7 @@ void SendAemNetEGTFormat(uint8_t ch)
         frame.get().TemperatureC = getEgtDrivers()[ch].temperature;
     }
 }
+#endif /* EGT_CHANNELS > 0 */
 
 // Weak link so boards can override it
 __attribute__((weak)) void SendCanForChannel(uint8_t ch)
@@ -237,6 +239,8 @@ __attribute__((weak)) void SendCanForChannel(uint8_t ch)
 
 __attribute__((weak)) void SendCanEgtForChannel(uint8_t ch)
 {
+#if (EGT_CHANNELS > 0)
     // TODO: implement RusEFI protocol?
     SendAemNetEGTFormat(ch);
+#endif /* EGT_CHANNELS > 0 */
 }
