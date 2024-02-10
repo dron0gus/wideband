@@ -21,6 +21,8 @@ void CanTxThread(void*)
 {
     chRegSetThreadName("CAN Tx");
 
+    systime_t prev = chVTGetSystemTime(); // Current system time.
+
     while(1)
     {
         for (int ch = 0; ch < AFR_CHANNELS; ch++) {
@@ -31,7 +33,7 @@ void CanTxThread(void*)
             SendCanEgtForChannel(ch);
         }
 
-        chThdSleepMilliseconds(WBO_TX_PERIOD_MS);
+        prev = chThdSleepUntilWindowed(prev, chTimeAddX(prev, TIME_MS2I(WBO_TX_PERIOD_MS)));
     }
 }
 
