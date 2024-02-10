@@ -2,13 +2,14 @@
 
 #include "can.h"
 
+#include "port.h"
 #include "fault.h"
 #include "can_helper.h"
+#include "can_aemnet.h"
 #include "heater_control.h"
 #include "lambda_conversion.h"
 #include "sampling.h"
 #include "pump_dac.h"
-#include "port.h"
 #include "max3185x.h"
 
 // this same header is imported by rusEFI to get struct layouts and firmware version
@@ -198,43 +199,11 @@ void SendRusefiFormat(uint8_t ch)
     }
 }
 
-void SendAemNetUEGOForamt(uint8_t ch)
-{
-    auto id = AEMNET_UEGO_BASE_ID + configuration->afr[ch].AemNetIdOffset;
-
-    const auto& sampler = GetSampler(ch);
-
-    if (configuration->afr[ch].AemNetTx) {
-        CanTxTyped<wbo::AemNetUEGOData> frame(id, true);
-
-        frame.get().Lambda = GetLambda(ch) * 10000;
-        frame.get().Oxygen = 0; // TODO:
-        frame.get().SystemVolts = sampler.GetInternalHeaterVoltage();
-        frame.get().Flags =
-            ((configuration->sensorType == SensorType::LSU49) ? 0x02 : 0x00) |
-            ((LambdaIsValid(ch)) ? 0x80 : 0x00);
-        frame.get().Faults = 0; //TODO:
-    }
-}
-
-#if (EGT_CHANNELS > 0)
-void SendAemNetEGTFormat(uint8_t ch)
-{
-    auto id = AEMNET_EGT_BASE_ID + configuration->egt[ch].AemNetIdOffset;
-
-    if (configuration->egt[ch].AemNetTx) {
-        CanTxTyped<wbo::AemNetEgtData> frame(id, true);
-
-        frame.get().TemperatureC = getEgtDrivers()[ch].temperature;
-    }
-}
-#endif /* EGT_CHANNELS > 0 */
-
 // Weak link so boards can override it
 __attribute__((weak)) void SendCanForChannel(uint8_t ch)
 {
     SendRusefiFormat(ch);
-    SendAemNetUEGOForamt(ch);
+    SendAemNetUEGOFormat(ch);
 }
 
 __attribute__((weak)) void SendCanEgtForChannel(uint8_t ch)
