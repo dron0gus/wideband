@@ -22,6 +22,7 @@ static Configuration* configuration;
 static THD_WORKING_AREA(waCanTxThread, 512);
 void CanTxThread(void*)
 {
+    int cycle;
     chRegSetThreadName("CAN Tx");
 
     // Current system time.
@@ -29,15 +30,20 @@ void CanTxThread(void*)
 
     while(1)
     {
+        // AFR - 100 Hz
         for (int ch = 0; ch < AFR_CHANNELS; ch++)
         {
             SendCanForChannel(ch);
         }
 
-        for (int ch = 0; ch < EGT_CHANNELS; ch++) {
-            SendCanEgtForChannel(ch);
+        // EGT - 20 Hz
+        if ((cycle % 5) == 0) {
+            for (int ch = 0; ch < EGT_CHANNELS; ch++) {
+                SendCanEgtForChannel(ch);
+            }
         }
 
+        cycle++;
         prev = chThdSleepUntilWindowed(prev, chTimeAddX(prev, TIME_MS2I(WBO_TX_PERIOD_MS)));
     }
 }
