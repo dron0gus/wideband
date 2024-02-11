@@ -73,7 +73,7 @@ class BigEndian
 #endif
 	private:
 		T rep;
-};
+} __attribute__((packed));
 
 template <typename T>
 class LittleEndian
