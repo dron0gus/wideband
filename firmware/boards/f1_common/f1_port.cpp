@@ -80,13 +80,13 @@ void Configuration::LoadDefaults()
 
     for (i = 0; i < EGT_CHANNELS; i++) {
         // disable RusEFI protocol - not implemented
-        afr[i].RusEfiTx = false;
-        afr[i].RusEfiTxDiag = false;
-        afr[i].RusEfiIdOffset = i;
+        egt[i].RusEfiTx = false;
+        egt[i].RusEfiTxDiag = false;
+        egt[i].RusEfiIdOffset = i;
 
         // Enable AemNet
-        afr[i].AemNetTx = true;
-        afr[i].AemNetIdOffset = i;
+        egt[i].AemNetTx = true;
+        egt[i].AemNetIdOffset = i;
     }
 
     /* Finaly */
