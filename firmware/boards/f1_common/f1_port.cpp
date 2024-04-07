@@ -71,7 +71,7 @@ void Configuration::LoadDefaults()
         // enable RusEFI protocol
         afr[i].RusEfiTx = true;
         afr[i].RusEfiTxDiag = true;
-        afr[i].RusEfiIdOffset = i;
+        afr[i].RusEfiIdOffset = 2 * i;
 
         // Disable AemNet
         afr[i].AemNetTx = false;
