@@ -48,3 +48,12 @@ jobs:
         with:
           name: Wideband ${{matrix.build-target}}
           path: ./firmware/deliver/${{matrix.build-target}}/wideband*
+
+      - name: Zip artifacts
+        run: zip Wideband\ ${{matrix.build-target}}.zip ./firmware/deliver/${{matrix.build-target}}/wideband*
+
+      - name: Make a new Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: Wideband\ ${{matrix.build-target}}.zip
