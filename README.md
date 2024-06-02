@@ -1,8 +1,8 @@
 # Wideband
 
-This fork is for development of FW for [RusEFI](https://github.com/rusefi) [dual channel wideband](https://github.com/rusefi/rusefi-hardware/tree/main/lambda-x2). Based on [initial desing](https://github.com/mck1117/wideband) from [mck1117](https://github.com/mck1117)
+This fork is for development of FW for [RusEFI](https://github.com/rusefi) [dual channel wideband](https://github.com/rusefi/rusefi-hardware/tree/main/lambda-x2). Based on [original desing](https://github.com/mck1117/wideband) from [mck1117](https://github.com/mck1117)
 
-For stm32f042 FW please refer to original repo. While I try to keep it buildable and unaffected by my modification I can not quaranty its functionality and provide any support.
+For stm32f042 FW please refer to original repo. While I try to keep it buildable and unaffected by my modification I can not guaranty its functionality and provide any support.
 
 # Initial flashing
 
