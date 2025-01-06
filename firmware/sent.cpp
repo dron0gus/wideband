@@ -105,6 +105,7 @@ static /* const */ ICUConfig icucfg[SENT_INPUT_COUNT] =
 		.arr = 0xFFFFFFFFU,
 		//.overcapture_cb = icuovercapture_in1,
 	},
+#if 0
 	/* P1.A4 -> L_AUX -> L_AUX_ADC -> PA7 */
 	{
 		.mode = ICU_INPUT_ACTIVE_LOW,
@@ -118,13 +119,14 @@ static /* const */ ICUConfig icucfg[SENT_INPUT_COUNT] =
 		//.overcapture_cb = icuovercapture_in2,
 	}
 #endif
+#endif
 };
 
 static ICUDriver *icudrivers[SENT_INPUT_COUNT] =
 {
 #if (STM32_ICU_USE_TIM3 == TRUE)
 	&ICUD3,
-	&ICUD3,
+	//&ICUD3,
 #else
 	nullptr,
 	nullptr,

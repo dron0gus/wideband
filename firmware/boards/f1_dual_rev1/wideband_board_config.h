@@ -99,4 +99,4 @@
 // *******************************
 //   SENT protocol receiver on analog inputs
 // *******************************
-#define SENT_INPUT_COUNT		2 // Number of sent channels
+#define SENT_INPUT_COUNT		1 // Number of sent channels
