@@ -27,7 +27,7 @@ SerialConfig cfg = {
     .cr3 = 0
 };
 
-static char printBuffer[200];
+BaseSequentialStream *chp = (BaseSequentialStream *) &SD1;
 
 static THD_WORKING_AREA(waUartThread, 512);
 static void UartThread(void*)
@@ -60,7 +60,7 @@ static void UartThread(void*)
             int heaterDuty = GetHeaterDuty(ch) * 100;
             int pumpDuty = GetPumpOutputDuty(ch) * 100;
 
-            size_t writeCount = chsnprintf(printBuffer, sizeof(printBuffer),
+            chprintf(chp,
                 "[AFR%d]: %d.%03d DC: %4d mV AC: %4d mV ESR: %5d T: %4d C Ipump: %6d uA PumpDac: %3d Vheater: %5d heater: %s (%d)\tfault: %s\r\n",
                 ch,
                 lambdaIntPart, lambdaThousandths,
@@ -73,16 +73,14 @@ static void UartThread(void*)
                 heaterVoltageMv,
                 describeHeaterState(GetHeaterState(ch)), heaterDuty,
                 describeFault(GetCurrentFault(ch)));
-            chnWrite(&SD1, (const uint8_t *)printBuffer, writeCount);
         }
 
 #if (EGT_CHANNELS > 0)
         for (ch = 0; ch < EGT_CHANNELS; ch++) {
-            size_t writeCount = chsnprintf(printBuffer, sizeof(printBuffer),
+            chprintf(chp,
                 "EGT[%d]: %d C (int %d C)\r\n",
                 (int)getEgtDrivers()[ch].temperature,
                 (int)getEgtDrivers()[ch].coldJunctionTemperature);
-            chnWrite(&SD1, (const uint8_t *)printBuffer, writeCount);
         }
 #endif /* EGT_CHANNELS > 0 */
 
