@@ -14,6 +14,7 @@
 #include "port.h"
 #include "tunerstudio.h"
 #include "indication.h"
+#include "sent.h"
 
 #include "wideband_config.h"
 
@@ -45,6 +46,10 @@ int main() {
     InitCan();
     InitUart();
     InitIndication();
+
+#if (SENT_INPUT_COUNT > 0)
+    initSent();
+#endif
 
 #if (EGT_CHANNELS > 0)
     StartEgt();

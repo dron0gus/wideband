@@ -8,6 +8,7 @@
 #include "max3185x.h"
 #include "fault.h"
 #include "uart.h"
+#include "sent.h"
 
 #include "tunerstudio.h"
 #include "tunerstudio_io.h"
@@ -67,6 +68,9 @@ static void UartThread(void*)
                 (int)getEgtDrivers()[ch].coldJunctionTemperature);
         }
 #endif /* EGT_CHANNELS > 0 */
+#if (SENT_INPUT_COUNT > 0)
+        sentDebug();
+#endif /* SENT_INPUT_COUNT > 0 */
 
         chThdSleepMilliseconds(100);
     }

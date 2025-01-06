@@ -113,6 +113,7 @@ endif
 # Configure libfirmware Paths/Includes
 RUSEFI_LIB = libfirmware
 include $(RUSEFI_LIB)/util/util.mk
+include $(RUSEFI_LIB)/sent/sent.mk
 
 # Licensing files.
 include $(CHIBIOS)/os/license/license.mk
@@ -151,6 +152,7 @@ CPPSRC = $(ALLCPPSRC) \
           can.cpp \
           can_helper.cpp \
           can_aemnet.cpp \
+          sent.cpp \
           fault.cpp \
           lambda_conversion.cpp \
           pwm.cpp \

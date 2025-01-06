@@ -10,6 +10,10 @@
     #define EGT_CHANNELS 0
 #endif
 
+#ifndef SENT_INPUT_COUNT
+    #define SENT_INPUT_COUNT 0
+#endif
+
 // *******************************
 //    Nernst voltage & ESR sense
 // *******************************

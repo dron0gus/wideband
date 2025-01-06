@@ -95,3 +95,8 @@
 //   Indication: per channel status LED + communication LED
 // *******************************
 #define ADVANCED_INDICATION
+
+// *******************************
+//   SENT protocol receiver on analog inputs
+// *******************************
+#define SENT_INPUT_COUNT		1 // Number of sent channels
