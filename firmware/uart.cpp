@@ -41,21 +41,23 @@ static void UartThread(void*)
 
         for (ch = 0; ch < AFR_CHANNELS; ch++) {
             float lambda = GetLambda(ch);
+            const auto& sampler = GetSampler(ch);
+
             int lambdaIntPart = lambda;
             int lambdaThousandths = (lambda - lambdaIntPart) * 1000;
-            int heaterVoltageMv = GetSampler(ch).GetInternalHeaterVoltage() * 1000;
+            int batteryVoltageMv = sampler.GetInternalHeaterVoltage() * 1000;
             int duty = GetHeaterDuty(ch) * 100;
 
             chprintf(chp,
                 "[AFR%d]: %d.%03d DC: %4d mV AC: %4d mV ESR: %5d T: %4d C Ipump: %6d uA Vheater: %5d heater: %s (%d)\tfault: %s\r\n",
                 ch,
                 lambdaIntPart, lambdaThousandths,
-                (int)(GetSampler(ch).GetNernstDc() * 1000.0),
-                (int)(GetSampler(ch).GetNernstAc() * 1000.0),
-                (int)GetSampler(ch).GetSensorInternalResistance(),
-                (int)GetSampler(ch).GetSensorTemperature(),
-                (int)(GetSampler(ch).GetPumpNominalCurrent() * 1000),
-                heaterVoltageMv,
+                (int)(sampler.GetNernstDc() * 1000.0),
+                (int)(sampler.GetNernstAc() * 1000.0),
+                (int)sampler.GetSensorInternalResistance(),
+                (int)sampler.GetSensorTemperature(),
+                (int)(sampler.GetPumpNominalCurrent() * 1000),
+                batteryVoltageMv,
                 describeHeaterState(GetHeaterState(ch)), duty,
                 describeFault(GetCurrentFault(ch)));
         }
@@ -63,7 +65,8 @@ static void UartThread(void*)
 #if (EGT_CHANNELS > 0)
         for (ch = 0; ch < EGT_CHANNELS; ch++) {
             chprintf(chp,
-                "EGT[%d]: %d C (int %d C)\r\n",
+                "[EGT%d]: %d C (int %d C)\r\n",
+                ch,
                 (int)getEgtDrivers()[ch].temperature,
                 (int)getEgtDrivers()[ch].coldJunctionTemperature);
         }
