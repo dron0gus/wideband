@@ -137,7 +137,7 @@ void CanRxThread(void*)
         else if ((frame.DLC == 0 || frame.DLC == 1) && CAN_ID(frame) == WB_BL_ENTER)
         {
             // If 0xFF (force update all) or our ID, reset to bootloader, otherwise ignore
-            if (frame.DLC == 0 || frame.data8[0] == 0xFF || frame.data8[0] == GetConfiguration()->afr[0].RusEfiIdOffset)
+            if (frame.DLC == 0 || frame.data8[0] == 0xFF || frame.data8[0] == GetConfiguration()->afr[0].RusEfiIdx)
             {
                 SendAck();
 
@@ -153,10 +153,10 @@ void CanRxThread(void*)
             int offset = frame.data8[0];
             configuration = GetConfiguration();
             for (int i = 0; i < AFR_CHANNELS; i++) {
-                configuration->afr[i].RusEfiIdOffset = offset + i;
+                configuration->afr[i].RusEfiIdx = offset + i;
             }
             for (int i = 0; i < EGT_CHANNELS; i++) {
-                configuration->egt[i].RusEfiIdOffset = offset + i;
+                configuration->egt[i].RusEfiIdx = offset + i;
             }
             SetConfiguration();
             SendAck();
@@ -185,7 +185,7 @@ void InitCan()
 
 void SendRusefiFormat(uint8_t ch)
 {
-    auto baseAddress = WB_DATA_BASE_ADDR + 2 * configuration->afr[ch].RusEfiIdOffset;
+    auto baseAddress = WB_DATA_BASE_ADDR + 2 * configuration->afr[ch].RusEfiIdx;
 
     const auto& sampler = GetSampler(ch);
     const auto& heater = GetHeaterController(ch);
