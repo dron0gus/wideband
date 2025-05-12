@@ -89,7 +89,7 @@ public:
             // enable RusEFI protocol
             afr[i].RusEfiTx = true;
             afr[i].RusEfiTxDiag = true;
-            afr[i].RusEfiIdOffset = 2 * i;
+            afr[i].RusEfiIdOffset = i;
 
             // Disable AemNet
             afr[i].AemNetTx = false;

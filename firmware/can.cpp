@@ -153,7 +153,7 @@ void CanRxThread(void*)
             int offset = frame.data8[0];
             configuration = GetConfiguration();
             for (int i = 0; i < AFR_CHANNELS; i++) {
-                configuration->afr[i].RusEfiIdOffset = offset + i * 2;
+                configuration->afr[i].RusEfiIdOffset = offset + i;
             }
             for (int i = 0; i < EGT_CHANNELS; i++) {
                 configuration->egt[i].RusEfiIdOffset = offset + i;
@@ -185,7 +185,7 @@ void InitCan()
 
 void SendRusefiFormat(uint8_t ch)
 {
-    auto baseAddress = WB_DATA_BASE_ADDR + configuration->afr[ch].RusEfiIdOffset;
+    auto baseAddress = WB_DATA_BASE_ADDR + 2 * configuration->afr[ch].RusEfiIdOffset;
 
     const auto& sampler = GetSampler(ch);
     const auto& heater = GetHeaterController(ch);
