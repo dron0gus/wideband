@@ -57,7 +57,7 @@ class Configuration {
 private:
     // Increment this any time the configuration format changes
     // It is stored along with the data to ensure that it has been written before
-    static constexpr uint32_t ExpectedTag = 0xDEADBE01;
+    static constexpr uint32_t ExpectedTag = 0xDEADBE02;
     uint32_t Tag = ExpectedTag;
 
 public:
