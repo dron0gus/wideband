@@ -68,33 +68,30 @@ static int LambdaIsValid(int ch)
             (nernstDc < (NERNST_TARGET + 0.1f)));
 }
 
-void SendAemNetUEGOFormat(uint8_t ch)
+void SendAemNetUEGOFormat(Configuration* cfg, uint8_t ch)
 {
-	Configuration* configuration = GetConfiguration();
-    auto id = AEMNET_UEGO_BASE_ID + configuration->afr[ch].AemNetIdOffset;
+    if (cfg->afr[ch].AemNetTx) {
+        auto id = AEMNET_UEGO_BASE_ID + cfg->afr[ch].AemNetIdOffset;
+        const auto& sampler = GetSampler(ch);
 
-    const auto& sampler = GetSampler(ch);
-
-    if (configuration->afr[ch].AemNetTx) {
         CanTxTyped<aemnet::UEGOData> frame(id, true);
 
         frame.get().Lambda = GetLambda(ch) * 10000;
         frame.get().Oxygen = 0; // TODO:
         frame.get().SystemVolts = sampler.GetInternalHeaterVoltage() * 10;
         frame.get().Flags =
-            ((configuration->sensorType == SensorType::LSU49) ? 0x02 : 0x00) |
+            ((cfg->sensorType == SensorType::LSU49) ? 0x02 : 0x00) |
             ((LambdaIsValid(ch)) ? 0x80 : 0x00);
         frame.get().Faults = 0; //TODO:
     }
 }
 
 #if (EGT_CHANNELS > 0)
-void SendAemNetEGTFormat(uint8_t ch)
+void SendAemNetEGTFormat(Configuration* cfg, uint8_t ch)
 {
-	Configuration* configuration = GetConfiguration();
-    auto id = AEMNET_EGT_BASE_ID + configuration->egt[ch].AemNetIdOffset;
+    if (cfg->egt[ch].AemNetTx) {
+        auto id = AEMNET_EGT_BASE_ID + cfg->egt[ch].AemNetIdOffset;
 
-    if (configuration->egt[ch].AemNetTx) {
         CanTxTyped<aemnet::EgtData> frame(id, true);
 
         frame.get().TemperatureC = getEgtDrivers()[ch].temperature;
