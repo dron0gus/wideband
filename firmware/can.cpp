@@ -229,13 +229,13 @@ void SendRusefiFormat(uint8_t ch)
 __attribute__((weak)) void SendCanForChannel(uint8_t ch)
 {
     SendRusefiFormat(ch);
-    SendAemNetUEGOFormat(ch);
+    SendAemNetUEGOFormat(configuration, ch);
 }
 
 __attribute__((weak)) void SendCanEgtForChannel(uint8_t ch)
 {
 #if (EGT_CHANNELS > 0)
     // TODO: implement RusEFI protocol?
-    SendAemNetEGTFormat(ch);
+    SendAemNetEGTFormat(configuration, ch);
 #endif
 }

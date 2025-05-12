@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include "byteswap.h"
+#include "port.h"
 
-void SendAemNetUEGOFormat(uint8_t ch);
-void SendAemNetEGTFormat(uint8_t ch);
+void SendAemNetUEGOFormat(Configuration* cfg, uint8_t ch);
+void SendAemNetEGTFormat(Configuration* cfg, uint8_t ch);
