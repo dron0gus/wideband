@@ -40,6 +40,53 @@ static struct pump_control_state state[AFR_CHANNELS] =
 #endif
 };
 
+constexpr float f_abs(float x)
+{
+    return x > 0 ? x : -x;
+}
+
+class SensorDetector
+{
+public:
+    void feed(int pumpCh, const ISampler& sampler)
+    {
+        if (cycle < 25)
+        {
+            SetPumpCurrentTarget(pumpCh, 1 * 1000);
+            nernstHi = sampler.GetNernstDc();
+        }
+        else
+        {
+            SetPumpCurrentTarget(pumpCh, -1 * 1000);
+            nernstLo = sampler.GetNernstDc();
+        }
+        if (++cycle >= 50)
+        {
+            float amplitude = f_abs(nernstHi - nernstLo);
+            if (amplitude > maxAmplitude) {
+                maxAmplitude = amplitude;
+            }
+            cycle = 0;
+            counter++;
+        }
+    }
+    void reset()
+    {
+        cycle = counter = 0;
+        nernstHi = nernstLo = 0.0;
+        maxAmplitude = 0.0;
+    }
+
+private:
+    int cycle = 0;
+    int counter = 0;
+    float nernstHi = 0.0;
+    float nernstLo = 0.0;
+    float maxAmplitude = 0.0;
+};
+
+SensorDetector sensorDetector[AFR_CHANNELS];
+
 static float pumpGainAdjust = 1.0f;
 
 void SetPumpGainAdjust(float ratio)
@@ -72,8 +119,14 @@ static void PumpThread(void*)
                 // result is in mA
                 SetPumpCurrentTarget(ch, result * 1000);
             }
+            else if (sampler.GetSensorTemperature() >= heater.GetTargetTemp() - START_SENSOR_DETECTION_TEMP_OFFSET)
+            {
+                sensorDetector[ch].feed(ch, sampler);
+            }
             else
             {
+                // reset sensor detector
+                sensorDetector[ch].reset();
                 // Otherwise set zero pump current to avoid damaging the sensor
                 SetPumpCurrentTarget(ch, 0);
             }
