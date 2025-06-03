@@ -62,3 +62,5 @@
 // minus this offset to avoid Vnerns voltage clamp near 0V
 // *******************************
 #define START_PUMP_TEMP_OFFSET	(200.0)
+
+#define START_SENSOR_DETECTION_TEMP_OFFSET  (300.0)
