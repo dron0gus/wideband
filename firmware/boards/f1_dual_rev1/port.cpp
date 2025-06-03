@@ -107,6 +107,12 @@ static float GetMaxSample(adcsample_t* buffer, size_t idx)
 static float l_heater_voltage = 0;
 static float r_heater_voltage = 0;
 
+static bool isClamped(float v)
+{
+    // is voltage too close to ADC bounds?
+    return (v <= 0.01) || (v >= (VCC_VOLTS - 0.01));
+}
+
 static bool l_heater;
 static bool r_heater;
 
@@ -150,16 +156,17 @@ AnalogResult AnalogSampleFinish()
     for (int i = 0; i < AFR_CHANNELS; i++) {
         res.ch[i].NernstClamped = false;
         float NernstRaw = AverageSamples(adcBuffer, (i == 0) ? 3 : 1);
-        if ((NernstRaw > 0.01) && (NernstRaw < (VCC_VOLTS - 0.01))) {
+        if (!isClamped(NernstRaw)) {
             /* not clamped */
             res.ch[i].NernstVoltage = (NernstRaw - NERNST_INPUT_OFFSET) * (1.0 / NERNST_INPUT_GAIN);
         } else {
             /* Clamped, use ungained input */
-            NernstRaw = AverageSamples(adcBuffer, (i == 0) ? 9 : 8) - HALF_VCC;
-            if ((NernstRaw > 0.01) && (NernstRaw < (VCC_VOLTS - 0.01))) {
+            NernstRaw = AverageSamples(adcBuffer, (i == 0) ? 9 : 8);
+            if (isClamped(NernstRaw)) {
                 res.ch[i].NernstClamped = true;
             }
-            res.ch[i].NernstVoltage = NernstRaw;
+            /* even it is clamped */
+            res.ch[i].NernstVoltage = NernstRaw - HALF_VCC;
         }
     }
     /* left */
