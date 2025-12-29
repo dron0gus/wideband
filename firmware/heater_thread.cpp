@@ -28,7 +28,7 @@ static const PWMConfig heaterPwmConfig = {
 class HeaterController : public HeaterControllerBase {
 public:
     HeaterController(int ch, int pwm_ch)
-        : HeaterControllerBase(ch, HEATER_PREHEAT_TIME, HEATER_WARMUP_TIMEOUT)
+        : HeaterControllerBase(ch)
         , pwm_ch(pwm_ch)
     {
     }
@@ -74,21 +74,24 @@ static void HeaterThread(void*)
     // immediately think we overshot the target temperature
     chThdSleepMilliseconds(1000);
 
+    struct HeaterConfig* configuration = &GetConfiguration()->heaterConfig;
+
     // Configure heater controllers for sensor type
     for (int i = 0; i < AFR_CHANNELS; i++)
     {
         auto& h = heaterControllers[i];
+
         switch (GetSensorType())
         {
             case SensorType::LSU42:
-                h.Configure(730, 80);
+                h.Configure(730, 80, configuration);
                 break;
             case SensorType::LSUADV:
-                h.Configure(785, 300);
+                h.Configure(785, 300, configuration);
                 break;
             case SensorType::LSU49:
             default:
-                h.Configure(780, 300);
+                h.Configure(780, 300, configuration);
                 break;
         }
     }

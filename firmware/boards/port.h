@@ -5,6 +5,7 @@
 
 #include "port_shared.h"
 #include "wideband_config.h"
+#include "heater_control.h"
 
 struct AnalogChannelResult
 {
@@ -57,7 +58,7 @@ class Configuration {
 private:
     // Increment this any time the configuration format changes
     // It is stored along with the data to ensure that it has been written before
-    static constexpr uint32_t ExpectedTag = 0xDEADBE02;
+    static constexpr uint32_t ExpectedTag = 0xDEADBE03;
     uint32_t Tag = ExpectedTag;
 
 public:
@@ -107,6 +108,10 @@ public:
             egt[i].AemNetIdOffset = i;
         }
 
+        heaterConfig.HeaterSupplyOffVoltage = HEATER_SUPPLY_OFF_VOLTAGE;
+        heaterConfig.HeaterSupplyOnVoltage = HEATER_SUPPLY_ON_VOLTAGE;
+        heaterConfig.PreheatTimeSec = HEATER_PREHEAT_TIME;
+        
         /* Finaly */
         Tag = ExpectedTag;
     }
@@ -143,12 +148,15 @@ public:
                 uint8_t AemNetIdOffset;
                 uint8_t pad[5];
             } egt[2];
+
+            struct HeaterConfig heaterConfig;
         } __attribute__((packed));
 
         // pad to 256 bytes including tag
         uint8_t pad[256 - sizeof(Tag)];
     };
 };
+static_assert(sizeof(Configuration) == 256, "Configuration size incorrect");
 
 int InitConfiguration();
 Configuration* GetConfiguration();
