@@ -7,6 +7,7 @@
 #include "can.h"
 #include "pid.h"
 #include "timer.h"
+#include "fixed_point.h"
 
 enum class HeaterState
 {
@@ -16,6 +17,14 @@ enum class HeaterState
     Stopped,
     NoHeaterSupply,
 };
+
+struct HeaterConfig {
+    FixedPoint<uint8_t, 10> HeaterSupplyOffVoltage; // in 0.1V steps, 25.5V max
+    FixedPoint<uint8_t, 10> HeaterSupplyOnVoltage;  // in 0.1V steps, 25.5V max
+    ScaledValue<uint8_t, 5> PreheatTimeSec; // In 5 second steps, 1275s max
+    uint8_t pad[5];
+} __attribute__((packed));
+static_assert(sizeof(HeaterConfig) == 8, "HeaterConfig size incorrect");
 
 struct ISampler;
 
@@ -31,8 +40,8 @@ struct IHeaterController
 class HeaterControllerBase : public IHeaterController
 {
 public:
-    HeaterControllerBase(int ch, int preheatTimeSec, int warmupTimeSec);
-    void Configure(float targetTempC, float targetEsr);
+    HeaterControllerBase(int ch);
+    void Configure(float targetTempC, float targetEsr, struct HeaterConfig* configuration);
     void Update(const ISampler& sampler, HeaterAllow heaterAllowState) override;
 
     bool IsRunningClosedLoop() const override;
@@ -62,9 +71,6 @@ private:
 
     const uint8_t ch;
 
-    const int m_preheatTimeSec;
-    const int m_warmupTimeSec;
-
     int m_retryTime = 0;
 
     Timer m_heaterStableTimer;
@@ -79,7 +85,7 @@ private:
     Timer m_underheatTimer;
     Timer m_overheatTimer;
 
-    static const int batteryStabTimeCounter = HEATER_BATTERY_STAB_TIME / HEATER_CONTROL_PERIOD;
+    struct HeaterConfig* m_configuration;
 };
 
 const IHeaterController& GetHeaterController(int ch);

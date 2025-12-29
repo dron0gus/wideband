@@ -1,11 +1,22 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
+#include "fixed_point.h"
 #include "heater_control.h"
+
+struct MockConfiguration {
+    struct HeaterConfig heaterConfig {
+        .HeaterSupplyOffVoltage = { 60 }, // 6.0V
+        .HeaterSupplyOnVoltage = { 110 }, // 11.0V
+        .PreheatTimeSec = { 1 }, // 5 seconds
+        .pad = {0},
+    };
+} mockConfig;
 
 struct MockHeater : public HeaterControllerBase
 {
-    MockHeater() : HeaterControllerBase(0, 5, 10) { }
+    MockHeater() : HeaterControllerBase(0) {
+    }
 
     MOCK_METHOD(void, SetDuty, (float), (const, override));
 };
@@ -13,6 +24,7 @@ struct MockHeater : public HeaterControllerBase
 TEST(HeaterStateOutput, Preheat)
 {
     MockHeater dut;
+    dut.Configure(780, 300, &mockConfig.heaterConfig);
 
     // Shouldn't depend upon sensor ESR
     EXPECT_EQ(2.0f, dut.GetVoltageForState(HeaterState::Preheat, 0));
@@ -30,7 +42,7 @@ TEST(HeaterStateOutput, WarmupRamp)
 TEST(HeaterStateOutput, ClosedLoop)
 {
     MockHeater dut;
-    dut.Configure(780, 300);
+    dut.Configure(780, 300, &mockConfig.heaterConfig);
 
     // At target -> zero output but with 7.5v offset
     EXPECT_EQ(dut.GetVoltageForState(HeaterState::ClosedLoop, 300), 7.5f);
@@ -45,6 +57,7 @@ TEST(HeaterStateOutput, ClosedLoop)
 TEST(HeaterStateOutput, Cases)
 {
     MockHeater dut;
+    dut.Configure(780, 300, &mockConfig.heaterConfig);
 
     EXPECT_EQ(0, dut.GetVoltageForState(HeaterState::Stopped, 0));
     EXPECT_EQ(0, dut.GetVoltageForState(HeaterState::NoHeaterSupply, 0));
@@ -54,7 +67,7 @@ TEST(HeaterStateMachine, PreheatToWarmupTimeout)
 {
     MockHeater dut;
     Timer::setMockTime(0);
-    dut.Configure(780, 300);
+    dut.Configure(780, 300, &mockConfig.heaterConfig);
 
     // For a while it should stay in preheat
     Timer::setMockTime(1e6);
@@ -73,7 +86,7 @@ TEST(HeaterStateMachine, PreheatToWarmupAlreadyWarm)
 {
     MockHeater dut;
     Timer::setMockTime(0);
-    dut.Configure(780, 300);
+    dut.Configure(780, 300, &mockConfig.heaterConfig);
 
     // Preheat for a little while
     for (size_t i = 0; i < 10; i++)
@@ -89,7 +102,7 @@ TEST(HeaterStateMachine, WarmupToClosedLoop)
 {
     MockHeater dut;
     Timer::setMockTime(0);
-    dut.Configure(780, 300);
+    dut.Configure(780, 300, &mockConfig.heaterConfig);
 
     // Warm up for a little while
     for (size_t i = 0; i < 10; i++)
@@ -105,7 +118,7 @@ TEST(HeaterStateMachine, WarmupTimeout)
 {
     MockHeater dut;
     Timer::setMockTime(0);
-    dut.Configure(780, 300);
+    dut.Configure(780, 300, &mockConfig.heaterConfig);
 
     // For a while it should stay in warmup
     Timer::setMockTime(1e6);
@@ -116,7 +129,7 @@ TEST(HeaterStateMachine, WarmupTimeout)
     EXPECT_EQ(HeaterState::WarmupRamp, dut.GetNextState(HeaterState::WarmupRamp, HeaterAllow::Allowed, 12, 500));
 
     // Warmup times out, sensor transitions to stopped
-    Timer::setMockTime(10.1e6);
+    Timer::setMockTime(60.1e6);
     EXPECT_EQ(HeaterState::Stopped, dut.GetNextState(HeaterState::WarmupRamp, HeaterAllow::Allowed, 12, 500));
 }
 
@@ -124,7 +137,7 @@ TEST(HeaterStateMachine, ClosedLoop)
 {
     MockHeater dut;
     Timer::setMockTime(0);
-    dut.Configure(780, 300);
+    dut.Configure(780, 300, &mockConfig.heaterConfig);
 
     // Check 5 sec stabilization timeout
     EXPECT_EQ(HeaterState::ClosedLoop, dut.GetNextState(HeaterState::ClosedLoop, HeaterAllow::Allowed, 12, 780));
@@ -165,7 +178,7 @@ TEST(HeaterStateMachine, ClosedLoop)
 TEST(HeaterStateMachine, TerminalStates)
 {
     MockHeater dut;
-    dut.Configure(780, 300);
+    dut.Configure(780, 300, &mockConfig.heaterConfig);
 
     EXPECT_EQ(HeaterState::Stopped, dut.GetNextState(HeaterState::Stopped, HeaterAllow::Allowed, 12, 780));
 }
