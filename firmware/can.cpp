@@ -2,7 +2,7 @@
 
 #include "can.h"
 
-#include "fault.h"
+#include "status.h"
 #include "can_helper.h"
 #include "can_aemnet.h"
 #include "heater_control.h"
@@ -10,6 +10,9 @@
 #include "sampling.h"
 #include "pump_dac.h"
 #include "port.h"
+#include "pump_control.h"
+
+#include <rusefi/math.h>
 
 // this same header is imported by rusEFI to get struct layouts and firmware version
 #include "../for_rusefi/wideband_can.h"
@@ -89,9 +92,18 @@ void CanRxThread(void*)
             continue;
         }
 
-        if (frame.DLC == 2 && CAN_ID(frame) == WB_MGS_ECU_STATUS)
+        // Ignore not ours frames
+        if (WB_MSG_GET_HEADER(CAN_ID(frame)) != WB_BL_HEADER)
         {
-            // This is status from ECU - battery voltage and heater enable signal
+            continue;
+        }
+
+        if (frame.DLC >= 2 && CAN_ID(frame) == WB_MSG_ECU_STATUS)
+        {
+            // This is status from ECU
+            // - battery voltage
+            // - heater enable signal
+            // - optionally pump control gain
 
             // data1 contains heater enable bit
             if ((frame.data8[1] & 0x1) == 0x1)
@@ -113,6 +125,12 @@ void CanRxThread(void*)
             else
             {
                 remoteBatteryVoltage = vbatt;
+            }
+
+            if (frame.DLC >= 3) {
+                // data2 contains pump controller gain in percent (0-200)
+                float pumpGain = frame.data8[2] * 0.01f;
+                SetPumpGainAdjust(clampF(0, pumpGain, 1));
             }
         }
         // If it's a bootloader entry request, reboot to the bootloader!
@@ -178,11 +196,9 @@ void SendRusefiFormat(uint8_t ch)
 
     // Lambda is valid if:
     // 1. Nernst voltage is near target
-    // 2. Pump driver isn't slammed in to the stop
-    // 3. Lambda is >0.6 (sensor isn't specified below that)
+    // 2. Lambda is >0.6 (sensor isn't specified below that)
     bool lambdaValid =
             nernstDc > (NERNST_TARGET - 0.1f) && nernstDc < (NERNST_TARGET + 0.1f) &&
-            pumpDuty > 0.1f && pumpDuty < 0.9f &&
             lambda > 0.6f;
 
     if (configuration->afr[ch].RusEfiTx) {
@@ -204,7 +220,7 @@ void SendRusefiFormat(uint8_t ch)
         frame.get().Esr = sampler.GetSensorInternalResistance();
         frame.get().NernstDc = nernstDc * 1000;
         frame.get().PumpDuty = pumpDuty * 255;
-        frame.get().Status = GetCurrentFault(ch);
+        frame.get().status = GetCurrentStatus(ch);
         frame.get().HeaterDuty = GetHeaterDuty(ch) * 255;
     }
 }

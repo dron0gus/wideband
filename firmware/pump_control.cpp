@@ -40,6 +40,13 @@ static struct pump_control_state state[AFR_CHANNELS] =
 #endif
 };
 
+static float pumpGainAdjust = 1.0f;
+
+void SetPumpGainAdjust(float ratio)
+{
+    pumpGainAdjust = ratio;
+}
+
 constexpr float f_abs(float x)
 {
     return x > 0 ? x : -x;
@@ -107,7 +114,7 @@ static void PumpThread(void*)
             {
                 float nernstVoltage = sampler.GetNernstDc();
 
-                float result = s.pumpPid.GetOutput(NERNST_TARGET, nernstVoltage);
+                float result = pumpGainAdjust * s.pumpPid.GetOutput(NERNST_TARGET, nernstVoltage);
 
                 // result is in mA
                 SetPumpCurrentTarget(ch, result * 1000);
