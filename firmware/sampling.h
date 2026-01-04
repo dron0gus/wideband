@@ -41,7 +41,7 @@ private:
     float pumpCurrentSenseVoltage = 0;
     int nernstClamped = 0;
 
-#ifdef BATTERY_INPUT_DIVIDER
+#ifdef BOARD_HAS_VOLTAGE_SENSE
     float internalHeaterVoltage = 0;
 #endif
 
