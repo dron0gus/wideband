@@ -168,6 +168,8 @@ HeaterState HeaterControllerBase::GetNextState(HeaterState currentState, HeaterA
                 // looks like heavy ramped Ipump affects sensorTemp measure
                 // and right after switch to closed loop sensorTemp drops below underhead threshold
             }
+            // reset fault
+            SetFault(ch, Fault::None);
 
             break;
         case HeaterState::Stopped:
