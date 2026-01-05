@@ -87,6 +87,13 @@ private:
 
 SensorDetector sensorDetector[AFR_CHANNELS];
 
+static float pumpGainAdjust = 1.0f;
+
+void SetPumpGainAdjust(float ratio)
+{
+    pumpGainAdjust = ratio;
+}
+
 static THD_WORKING_AREA(waPumpThread, 256);
 static void PumpThread(void*)
 {
@@ -107,7 +114,7 @@ static void PumpThread(void*)
             {
                 float nernstVoltage = sampler.GetNernstDc();
 
-                float result = s.pumpPid.GetOutput(NERNST_TARGET, nernstVoltage);
+                float result = pumpGainAdjust * s.pumpPid.GetOutput(NERNST_TARGET, nernstVoltage);
 
                 // result is in mA
                 SetPumpCurrentTarget(ch, result * 1000);

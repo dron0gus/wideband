@@ -5,7 +5,7 @@
 #include "can_aemnet.h"
 
 #include "port.h"
-#include "fault.h"
+#include "status.h"
 #include "heater_control.h"
 #include "lambda_conversion.h"
 #include "sampling.h"
