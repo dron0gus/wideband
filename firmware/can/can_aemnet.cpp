@@ -51,13 +51,20 @@ void SendAemNetUEGOFormat(Configuration* cfg, uint8_t ch)
 
     CanTxTyped<aemnet::UEGOData> frame(id, true);
     float lambda = GetLambda(ch);
+    uint8_t lambdaValid = LambdaIsValid(ch, lambda);
+    float oxygenPercent = 0;
 
-    frame.get().Lambda = GetLambda(ch) * 10000;
-    frame.get().Oxygen = 0; // TODO:
+    if (lambdaValid && lambda > 0) {
+        oxygenPercent = ((lambda - 1.0f) / lambda) * 20.95f;
+    }
+
+    frame.get().Lambda = lambdaValid ? lambda * 10000 : 0;
+    
+    frame.get().Oxygen = oxygenPercent * 1000;
     frame.get().SystemVolts = sampler.GetInternalHeaterVoltage() * 10;
     frame.get().Flags =
         ((cfg->sensorType == SensorType::LSU49) ? 0x02 : 0x00) |
-        ((LambdaIsValid(ch, lambda)) ? 0x80 : 0x00);
+        ((lambdaValid) ? 0x80 : 0x00);
     frame.get().Faults = 0; //TODO:
 }
 

@@ -156,6 +156,8 @@ CPPSRC = $(ALLCPPSRC) \
           can/can_haltech.cpp \
           can/can_motec.cpp \
           can/can_link.cpp \
+          can/can_motec.cpp \
+          can/can_emtron.cpp \
           status.cpp \
           lambda_conversion.cpp \
           pwm.cpp \
