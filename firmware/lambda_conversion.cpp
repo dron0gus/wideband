@@ -1,5 +1,6 @@
 #include "lambda_conversion.h"
 #include "sampling.h"
+#include "heater_control.h"
 #include "port.h"
 
 static float GetPhiLsu49(float pumpCurrent)
@@ -90,4 +91,17 @@ float GetLambda(int ch)
 
     // Lambda is reciprocal of phi
     return 1 / GetPhi(pumpCurrent);
+}
+
+int LambdaIsValid(int ch, float lambda)
+{
+    const auto& sampler = GetSampler(ch);
+    const auto& heater = GetHeaterController(ch);
+
+    float nernstDc = sampler.GetNernstDc();
+
+    return ((heater.IsRunningClosedLoop()) &&
+            (nernstDc > (NERNST_TARGET - 0.1f)) &&
+            (nernstDc < (NERNST_TARGET + 0.1f)) &&
+            (lambda > 0.6f));
 }

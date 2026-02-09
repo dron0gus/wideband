@@ -41,6 +41,11 @@ enum class SensorType : uint8_t {
     LSUADV = 2,
 };
 
+struct CanStatusData{
+    HeaterAllow heaterAllow;
+    float remoteBatteryVoltage;
+};
+
 #ifndef BOARD_DEFAULT_SENSOR_TYPE
 #define BOARD_DEFAULT_SENSOR_TYPE SensorType::LSU49
 #endif
@@ -54,11 +59,22 @@ enum class AuxOutputMode : uint8_t {
     Egt1 = 5,
 };
 
+enum class CanProtocol : uint8_t {
+    None = 0,
+    AemNet = 1, // for backward compatibility
+    LinkEcu = 2,
+    Haltech = 3,
+    EcuMasterClassic = 4,
+    EcuMasterBlack = 5,
+    Motec = 6,
+    Emtron = 7,
+};
+
 class Configuration {
 private:
     // Increment this any time the configuration format changes
     // It is stored along with the data to ensure that it has been written before
-    static constexpr uint32_t ExpectedTag = 0xDEADBE03;
+    static constexpr uint32_t ExpectedTag = 0xDEADBE04;
     uint32_t Tag = ExpectedTag;
 
 public:
@@ -75,6 +91,7 @@ public:
         *this = {};
 
         NoLongerUsed0 = 0;
+        CanMode = 0;
         sensorType = BOARD_DEFAULT_SENSOR_TYPE;
 
         /* default auxout curve is 0..5V for AFR 8.5 to 18.0
@@ -92,9 +109,9 @@ public:
             afr[i].RusEfiTxDiag = true;
             afr[i].RusEfiIdx = i;
 
-            // Disable AemNet
-            afr[i].AemNetTx = false;
-            afr[i].AemNetIdOffset = i;
+            // No extra protocol by default
+            afr[i].ExtraCanProtocol = CanProtocol::None;
+            afr[i].ExtraCanIdOffset = i;
         }
 
         for (i = 0; i < EGT_CHANNELS; i++) {
@@ -103,9 +120,9 @@ public:
             egt[i].RusEfiTxDiag = false;
             egt[i].RusEfiIdx = i;
 
-            // Enable AemNet
-            egt[i].AemNetTx = true;
-            egt[i].AemNetIdOffset = i;
+            // AemNet protocol by default
+            egt[i].ExtraCanProtocol = CanProtocol::AemNet;
+            egt[i].ExtraCanIdOffset = i;
         }
 
         heaterConfig.HeaterSupplyOffVoltage = HEATER_SUPPLY_OFF_VOLTAGE;
@@ -119,7 +136,8 @@ public:
     // Actual configuration data
     union {
         struct {
-            uint8_t NoLongerUsed0 = 0;
+            uint8_t NoLongerUsed0 : 6 = 0;
+            uint8_t CanMode : 2;
             // AUX0 and AUX1 curves
             float auxOutBins[2][8];
             float auxOutValues[2][8];
@@ -131,22 +149,24 @@ public:
             struct {
                 bool RusEfiTx:1;
                 bool RusEfiTxDiag:1;
-                bool AemNetTx:1;
+                CanProtocol ExtraCanProtocol:4;
+
 
                 uint8_t RusEfiIdx;
-                uint8_t AemNetIdOffset;
-                uint8_t pad[5];
+                uint8_t ExtraCanIdOffset;
+                uint8_t Reserved[5];
             } afr[2];
 
             // per EGT channel settings
             struct {
                 bool RusEfiTx:1;
                 bool RusEfiTxDiag:1;
-                bool AemNetTx:1;
+                CanProtocol ExtraCanProtocol:4;
+
 
                 uint8_t RusEfiIdx;
-                uint8_t AemNetIdOffset;
-                uint8_t pad[5];
+                uint8_t ExtraCanIdOffset;
+                uint8_t Reserved[5];
             } egt[2];
 
             struct HeaterConfig heaterConfig;

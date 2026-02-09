@@ -28,11 +28,17 @@ void WriteAtOffset(Configuration& config, size_t offset, T value) {
     std::memcpy(bytes + offset, &value, sizeof(T));
 }
 
+TEST(ConfigLayout, BinaryCompatibility_NoLongerUsed0_ZeroInit) {
+    Configuration config = {};
+    
+    EXPECT_EQ(config.NoLongerUsed0, 0);
+}
+
 TEST(ConfigLayout, BinaryCompatibility_NoLongerUsed0) {
     Configuration config = {};
     
     size_t offset = ConfigSizes::TAG;
-    uint8_t expectedValue = 0x42;
+    uint8_t expectedValue = 0x26;
     WriteAtOffset(config, offset, expectedValue);
     
     EXPECT_EQ(config.NoLongerUsed0, expectedValue);
@@ -127,29 +133,29 @@ TEST(ConfigLayout, BinaryCompatibility_AfrChannelSettings) {
                   + ConfigSizes::SENSOR_TYPE;
     
     // Write first AFR channel
-    uint8_t bitfield0 = 0b00000111; // RusEfiTx=1, RusEfiTxDiag=1, AemNetTx=1
+    uint8_t bitfield0 = 0b00000111; // RusEfiTx=1, RusEfiTxDiag=1, ExtraCanProtocol=1
     WriteAtOffset(config, offset, bitfield0);
     WriteAtOffset(config, offset + 1, static_cast<uint8_t>(5)); // RusEfiIdx
-    WriteAtOffset(config, offset + 2, static_cast<uint8_t>(10)); // AemNetIdOffset
+    WriteAtOffset(config, offset + 2, static_cast<uint8_t>(10)); // ExtraCanIdOffset
     
     EXPECT_TRUE(config.afr[0].RusEfiTx);
     EXPECT_TRUE(config.afr[0].RusEfiTxDiag);
-    EXPECT_TRUE(config.afr[0].AemNetTx);
+    EXPECT_TRUE(config.afr[0].ExtraCanProtocol == CanProtocol::AemNet);
     EXPECT_EQ(config.afr[0].RusEfiIdx, 5);
-    EXPECT_EQ(config.afr[0].AemNetIdOffset, 10);
+    EXPECT_EQ(config.afr[0].ExtraCanIdOffset, 10);
     
     // Write second AFR channel
     offset += ConfigSizes::AFR_CHANNEL;
-    uint8_t bitfield1 = 0b00000010; // RusEfiTx=0, RusEfiTxDiag=1, AemNetTx=0
+    uint8_t bitfield1 = 0b00000010; // RusEfiTx=0, RusEfiTxDiag=1, ExtraCanProtocol=0
     WriteAtOffset(config, offset, bitfield1);
     WriteAtOffset(config, offset + 1, static_cast<uint8_t>(7)); // RusEfiIdx
-    WriteAtOffset(config, offset + 2, static_cast<uint8_t>(15)); // AemNetIdOffset
+    WriteAtOffset(config, offset + 2, static_cast<uint8_t>(15)); // ExtraCanIdOffset
     
     EXPECT_FALSE(config.afr[1].RusEfiTx);
     EXPECT_TRUE(config.afr[1].RusEfiTxDiag);
-    EXPECT_FALSE(config.afr[1].AemNetTx);
+    EXPECT_TRUE(config.afr[1].ExtraCanProtocol == CanProtocol::None);
     EXPECT_EQ(config.afr[1].RusEfiIdx, 7);
-    EXPECT_EQ(config.afr[1].AemNetIdOffset, 15);
+    EXPECT_EQ(config.afr[1].ExtraCanIdOffset, 15);
 }
 
 TEST(ConfigLayout, BinaryCompatibility_EgtChannelSettings) {
@@ -164,29 +170,29 @@ TEST(ConfigLayout, BinaryCompatibility_EgtChannelSettings) {
                   + ConfigSizes::AFR_SETTINGS;
     
     // Write first EGT channel
-    uint8_t bitfield0 = 0b00000101; // RusEfiTx=1, RusEfiTxDiag=0, AemNetTx=1
+    uint8_t bitfield0 = 0b00000101; // RusEfiTx=1, RusEfiTxDiag=0, ExtraCanProtocol=AemNet
     WriteAtOffset(config, offset, bitfield0);
     WriteAtOffset(config, offset + 1, static_cast<uint8_t>(3)); // RusEfiIdx
-    WriteAtOffset(config, offset + 2, static_cast<uint8_t>(8)); // AemNetIdOffset
+    WriteAtOffset(config, offset + 2, static_cast<uint8_t>(8)); // ExtraCanIdOffset
     
     EXPECT_TRUE(config.egt[0].RusEfiTx);
     EXPECT_FALSE(config.egt[0].RusEfiTxDiag);
-    EXPECT_TRUE(config.egt[0].AemNetTx);
+    EXPECT_TRUE(config.egt[0].ExtraCanProtocol == CanProtocol::AemNet);
     EXPECT_EQ(config.egt[0].RusEfiIdx, 3);
-    EXPECT_EQ(config.egt[0].AemNetIdOffset, 8);
+    EXPECT_EQ(config.egt[0].ExtraCanIdOffset, 8);
 
     // Write second EGT channel
     offset += ConfigSizes::EGT_CHANNEL;
-    uint8_t bitfield1 = 0b00000010; // RusEfiTx=0, RusEfiTxDiag=1, AemNetTx=0
+    uint8_t bitfield1 = 0b00000010; // RusEfiTx=0, RusEfiTxDiag=1, ExtraCanProtocol=0
     WriteAtOffset(config, offset, bitfield1);
     WriteAtOffset(config, offset + 1, static_cast<uint8_t>(7)); // RusEfiIdx
-    WriteAtOffset(config, offset + 2, static_cast<uint8_t>(15)); // AemNetIdOffset
+    WriteAtOffset(config, offset + 2, static_cast<uint8_t>(15)); // ExtraCanIdOffset
     
     EXPECT_FALSE(config.egt[1].RusEfiTx);
     EXPECT_TRUE(config.egt[1].RusEfiTxDiag);
-    EXPECT_FALSE(config.egt[1].AemNetTx);
+    EXPECT_TRUE(config.egt[1].ExtraCanProtocol == CanProtocol::None);
     EXPECT_EQ(config.egt[1].RusEfiIdx, 7);
-    EXPECT_EQ(config.egt[1].AemNetIdOffset, 15);
+    EXPECT_EQ(config.egt[1].ExtraCanIdOffset, 15);
 }
 
 TEST(ConfigLayout, BinaryCompatibility_HeaterConfig) {

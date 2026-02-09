@@ -39,6 +39,14 @@ static const CANConfig canConfig1000 =
 };
 
 
-const CANConfig& GetCanConfig() {
+const CANConfig& GetCanConfig(uint8_t mode) {
+    mode &= 0x03;
+    switch (mode) {
+        case 0:
+            return canConfig500;
+        case 1:
+            return canConfig1000;
+    }
+    // default to 500kbps
     return canConfig500;
 }
