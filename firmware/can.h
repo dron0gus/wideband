@@ -3,8 +3,6 @@
 #include <cstdint>
 
 void InitCan();
-void SendCanData(float lambda, uint16_t measuredResistance);
-void SendRusefiFormat(uint8_t ch);
 
 enum class HeaterAllow {
     // no CAN message telling us what to do has been rx'd
@@ -18,13 +16,12 @@ enum class HeaterAllow {
 };
 
 HeaterAllow GetHeaterAllowed();
-
 float GetRemoteBatteryVoltage();
 
 // implement this for your board if you want some non-standard behavior
 // default implementation simply calls SendRusefiFormat
 void SendCanForChannel(uint8_t ch);
-void SendCanEgtForChannel(uint8_t ch);
+void SendCanEgt();
 
 // Helpers to support both bxCAN and CANFD peripherals
 #ifdef STM32G4XX

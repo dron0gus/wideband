@@ -1,5 +1,6 @@
 #include "lambda_conversion.h"
 #include "sampling.h"
+#include "heater_control.h"
 #include "port.h"
 
 static float GetPhiLsu49(float pumpCurrent)
@@ -90,4 +91,29 @@ float GetLambda(int ch)
 
     // Lambda is reciprocal of phi
     return 1 / GetPhi(pumpCurrent);
+}
+
+int LambdaIsValid(int ch, float lambda)
+{
+    const auto& sampler = GetSampler(ch);
+    const auto& heater = GetHeaterController(ch);
+
+    float nernstDc = sampler.GetNernstDc();
+
+    return ((heater.IsRunningClosedLoop()) &&
+            (nernstDc > (NERNST_TARGET - 0.1f)) &&
+            (nernstDc < (NERNST_TARGET + 0.1f)) &&
+            (lambda > 0.6f));
+}
+
+float GetOxygenConcentration(float lambda)
+{
+    // O2% = ((lambda - 1) / lambda) * 20.95 (atmospheric oxygen percentage)
+
+    if (lambda <= 0)
+    {
+        return 0;
+    }
+
+    return ((lambda - 1.0f) / lambda) * 20.95f;
 }

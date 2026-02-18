@@ -1,0 +1,138 @@
+VERSION ""
+
+
+NS_ :
+    NS_DESC_
+    CM_
+    BA_DEF_
+    BA_
+    VAL_
+    CAT_DEF_
+    CAT_
+    FILTER
+    BA_DEF_DEF_
+    EV_DATA_
+    ENVVAR_DATA_
+    SGTYPE_
+    SGTYPE_VAL_
+    BA_DEF_SGTYPE_
+    BA_SGTYPE_
+    SIG_TYPE_REF_
+    VAL_TABLE_
+    SIG_GROUP_
+    SIG_VALTYPE_
+    SIGTYPE_VALTYPE_
+    BO_TX_BU_
+    BA_DEF_REL_
+    BA_REL_
+    BA_DEF_DEF_REL_
+    BU_SG_REL_
+    BU_EV_REL_
+    BU_BO_REL_
+    SG_MUL_VAL_
+
+BS_: 
+BU_: Link_CanLambda TCCXX Link_ECU
+
+BO_ 950 LinkEcu_AfrData1: 8 Link_CanLambda
+   SG_ FrameIndex M : 7|8@0+ (1,0) [0|255] "" Link_ECU
+   SG_ ErrorCodes m50 : 15|8@0+ (1,0) [0|255] "" Link_ECU
+   SG_ Lambda m50 : 23|16@0+ (0.001,0) [0|65.535] "lambda" Link_ECU
+   SG_ SensorTemp m50 : 39|16@0+ (1,0) [0|65535] "degC" Link_ECU
+   SG_ Status m50 : 55|8@0+ (1,0) [0|6] "" Link_ECU
+   SG_ IpCurrent m51 : 23|16@0- (0.001,0) [-32.768|32.767] "mA" Link_ECU
+   SG_ SystemVoltage m51 : 39|16@0+ (0.01,0) [0|655.35] "V" Link_ECU
+   SG_ HeaterVoltage m51 : 55|16@0+ (0.01,0) [0|655.35] "V" Link_ECU
+
+
+BO_ 951 LinkEcu_AfrData2: 8 Link_CanLambda
+   SG_ FrameIndex M : 7|8@0+ (1,0) [0|255] "" Link_ECU
+   SG_ ErrorCodes m50 : 15|8@0+ (1,0) [0|255] "" Link_ECU
+   SG_ Lambda m50 : 23|16@0+ (0.001,0) [0|65.535] "lambda" Link_ECU
+   SG_ SensorTemp m50 : 39|16@0+ (1,0) [0|65535] "degC" Link_ECU
+   SG_ Status m50 : 55|8@0+ (1,0) [0|6] "" Link_ECU
+   SG_ IpCurrent m51 : 23|16@0- (0.001,0) [-32.768|32.767] "mA" Link_ECU
+   SG_ SystemVoltage m51 : 39|16@0+ (0.01,0) [0|655.35] "V" Link_ECU
+   SG_ HeaterVoltage m51 : 55|16@0+ (0.01,0) [0|655.35] "V" Link_ECU
+
+
+BO_ 1797 LinkEcu_EgtData1: 8 TCCXX
+   SG_ Egt1 : 7|16@0- (0.25,0) [0|1250] "degC" Link_ECU
+   SG_ Egt2 : 23|16@0- (0.25,0) [0|1250] "degC" Link_ECU
+   SG_ Egt3 : 39|16@0- (0.25,0) [0|1250] "degC" Link_ECU
+   SG_ Egt4 : 55|16@0- (0.25,0) [0|1250] "degC" Link_ECU
+   
+BO_ 1798 LinkEcu_EgtData2: 8 TCCXX
+   SG_ Egt5 : 7|16@0- (0.25,0) [0|1250] "degC" Link_ECU
+   SG_ Egt6 : 23|16@0- (0.25,0) [0|1250] "degC" Link_ECU
+   SG_ Egt7 : 39|16@0- (0.25,0) [0|1250] "degC" Link_ECU
+   SG_ Egt8 : 55|16@0- (0.25,0) [0|1250] "degC" Link_ECU
+
+BO_ 1799 LinkEcu_EgtData3: 8 TCCXX
+   SG_ Egt9 : 7|16@0- (0.25,0) [0|1250] "degC" Link_ECU
+   SG_ Egt10 : 23|16@0- (0.25,0) [0|1250] "degC" Link_ECU
+   SG_ SupplyVolt : 55|8@0+ (0.1,0) [0|25.5] "V" Link_ECU
+   SG_ ChipTemp : 63|8@0+ (1,0) [0|125] "degC" Link_ECU
+
+BO_ 1800 LinkEcu_EgtStatus: 8 TCCXX
+   SG_ TcStatus1 : 3|4@0+ (1,0) [0|5] "" Link_ECU
+   SG_ TcStatus2 : 7|4@0+ (1,0) [0|5] "" Link_ECU
+   SG_ TcStatus3 : 11|4@0+ (1,0) [0|5] "" Link_ECU
+   SG_ TcStatus4 : 15|4@0+ (1,0) [0|5] "" Link_ECU
+   SG_ TcStatus5 : 19|4@0+ (1,0) [0|5] "" Link_ECU
+   SG_ TcStatus6 : 23|4@0+ (1,0) [0|5] "" Link_ECU
+   SG_ TcStatus7 : 27|4@0+ (1,0) [0|5] "" Link_ECU
+   SG_ TcStatus8 : 31|4@0+ (1,0) [0|5] "" Link_ECU
+   SG_ TcStatus9 : 35|4@0+ (1,0) [0|5] "" Link_ECU
+   SG_ TcStatus10 : 39|4@0+ (1,0) [0|5] "" Link_ECU
+
+BO_ 958 LinkEcu_ControlMessage: 8 Link_ECU
+   SG_ FrameIndex : 7|8@0+ (1,0) [0|255] "" Link_CanLambda
+   SG_ EngineRpm : 15|16@0+ (1,0) [0|65535] "rpm" Link_CanLambda
+   SG_ ExhaustPressure : 31|16@0+ (0.1,0) [0|6553.5] "kPa" Link_CanLambda
+   SG_ UseExhaustPressure : 47|8@0+ (1,0) [0|1] "" Link_CanLambda
+
+BO_ 956 LinkEcu_SetIndexCommand: 8 Link_ECU
+   SG_ CommandId : 7|8@0+ (1,0) [0|255] "" Link_CanLambda
+   SG_ IndexOffset : 11|4@0+ (1,0) [0|15] "" Link_CanLambda
+   SG_ BusFreq : 15|4@0+ (1,0) [0|4] "" Link_CanLambda
+
+CM_ SG_ 950 IpCurrent "Pump current in mA";
+CM_ SG_ 950 SystemVoltage "System voltage in V";
+CM_ SG_ 950 HeaterVoltage "Heater voltage in V";
+CM_ SG_ 951 IpCurrent "Pump current in mA";
+CM_ SG_ 951 SystemVoltage "System voltage in V";
+CM_ SG_ 951 HeaterVoltage "Heater voltage in V";
+
+CM_ BO_ 1797 "Link_ECU EGT Data 1. Base ID 0x705 (1797), supports EGT channels 1-4";
+CM_ BO_ 1798 "Link_ECU EGT Data 2. Base ID 0x706 (1798), supports EGT channels 5-8";
+CM_ BO_ 1799 "Link_ECU EGT Data 3. Base ID 0x707 (1799), supports EGT channels 9-10 plus system info";
+CM_ BO_ 1800 "Link_ECU EGT Status. Base ID 0x708 (1800), status for up to 10 thermocouples";
+CM_ BO_ 958 "Link_ECU Control Message. Base ID 0x3BE (958), sent by ECU to wideband controller. FrameIndex=85";
+CM_ SG_ 958 EngineRpm "Engine RPM for heater control. Heater enabled if RPM > 400";
+CM_ SG_ 958 ExhaustPressure "Exhaust absolute pressure in kPa, 0.1 scale";
+CM_ BO_ 956 "Link_ECU Set Index Command. Base ID 0x3BC (956). Used to configure CAN ID offset. CommandId=24";
+CM_ SG_ 956 IndexOffset "CAN ID offset (0-15)";
+CM_ SG_ 956 BusFreq "0=100kbps, 1=125kbps, 2=250kbps, 3=500kbps, 4=1Mbps";
+BA_DEF_ "BusType" STRING ;
+BA_DEF_ BO_ "GenMsgBackgroundColor" STRING ;
+BA_DEF_ BO_ "GenMsgForegroundColor" STRING ;
+BA_DEF_ BO_ "labelfilters" INT 0 0;
+BA_DEF_DEF_ "BusType" "CAN";
+BA_DEF_DEF_ "GenMsgBackgroundColor" "#ffffff";
+BA_DEF_DEF_ "GenMsgForegroundColor" "#000000";
+BA_DEF_DEF_ "labelfilters" 1;
+
+VAL_ 950 Status 0 "Off" 1 "Disabled" 2 "Initializing" 3 "Diagnostic" 4 "Calibration" 5 "Heating" 6 "Operating";
+VAL_ 951 Status 0 "Off" 1 "Disabled" 2 "Initializing" 3 "Diagnostic" 4 "Calibration" 5 "Heating" 6 "Operating";
+
+VAL_ 1800 TcStatus1 0 "Ok" 1 "ShortToVcc" 2 "ShortToGnd" 3 "NotConnected" 4 "UnknownError" 5 "ChipMissing";
+VAL_ 1800 TcStatus2 0 "Ok" 1 "ShortToVcc" 2 "ShortToGnd" 3 "NotConnected" 4 "UnknownError" 5 "ChipMissing";
+VAL_ 1800 TcStatus3 0 "Ok" 1 "ShortToVcc" 2 "ShortToGnd" 3 "NotConnected" 4 "UnknownError" 5 "ChipMissing";
+VAL_ 1800 TcStatus4 0 "Ok" 1 "ShortToVcc" 2 "ShortToGnd" 3 "NotConnected" 4 "UnknownError" 5 "ChipMissing";
+VAL_ 1800 TcStatus5 0 "Ok" 1 "ShortToVcc" 2 "ShortToGnd" 3 "NotConnected" 4 "UnknownError" 5 "ChipMissing";
+VAL_ 1800 TcStatus6 0 "Ok" 1 "ShortToVcc" 2 "ShortToGnd" 3 "NotConnected" 4 "UnknownError" 5 "ChipMissing";
+VAL_ 1800 TcStatus7 0 "Ok" 1 "ShortToVcc" 2 "ShortToGnd" 3 "NotConnected" 4 "UnknownError" 5 "ChipMissing";
+VAL_ 1800 TcStatus8 0 "Ok" 1 "ShortToVcc" 2 "ShortToGnd" 3 "NotConnected" 4 "UnknownError" 5 "ChipMissing";
+VAL_ 1800 TcStatus9 0 "Ok" 1 "ShortToVcc" 2 "ShortToGnd" 3 "NotConnected" 4 "UnknownError" 5 "ChipMissing";
+VAL_ 1800 TcStatus10 0 "Ok" 1 "ShortToVcc" 2 "ShortToGnd" 3 "NotConnected" 4 "UnknownError" 5 "ChipMissing";

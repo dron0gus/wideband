@@ -1,0 +1,166 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: Motec_LTC Motec_E888 ECU
+
+BO_ 1120 Motec_LTC_Data_1: 8 Motec_LTC
+   SG_ CompoundId M : 7|8@0+ (1,0) [0|2] ""  ECU
+   SG_ Lambda m0: 15|16@0+ (0.001,0) [0|65.535] "lambda"  ECU
+   SG_ Ipn m0: 31|16@0+ (0.001,0) [0|65.535] "mA"  ECU
+   SG_ InternalTemp m0: 47|8@0+ (1,0) [0|255] "degC"  ECU
+   SG_ HeaterShortToGnd m0: 48|1@0+ (1,0) [0|1] ""  ECU
+   SG_ HeaterShortToBatt m0: 49|1@0+ (1,0) [0|1] ""  ECU
+   SG_ HeaterOpen m0: 50|1@0+ (1,0) [0|1] ""  ECU
+   SG_ SensorFailedToHeat m0: 51|1@0+ (1,0) [0|1] ""  ECU
+   SG_ SensorWireShort m0: 52|1@0+ (1,0) [0|1] ""  ECU
+   SG_ DutyCycle m0: 63|8@0+ (1,0) [0|100] "%"  ECU
+   SG_ SensorState m1: 15|8@0+ (1,0) [0|8] ""  ECU
+   SG_ VBatt m1: 23|16@0+ (0.01,0) [0|655.35] "V"  ECU
+   SG_ Ip m1: 39|16@0+ (0.001,0) [0|65.535] "mA"  ECU
+   SG_ Ri m1: 55|16@0+ (1,0) [0|65535] "Ohm"  ECU
+   SG_ CompoundId m2: 7|8@0+ (1,0) [0|2] ""  ECU
+   SG_ FirmwareVersionLetter m2: 15|8@0+ (1,0) [0|25] ""  ECU
+   SG_ FirmwareVersionNumber m2: 23|16@0+ (1,0) [0|65535] ""  ECU
+   SG_ SerialNumber m2: 39|16@0+ (1,0) [0|65535] ""  ECU
+
+BO_ 1121 Motec_LTC_Data_2: 8 Motec_LTC
+   SG_ CompoundId M : 7|8@0+ (1,0) [0|2] ""  ECU
+   SG_ Lambda m0: 15|16@0+ (0.001,0) [0|65.535] "lambda"  ECU
+   SG_ Ipn m0: 31|16@0+ (0.001,0) [0|65.535] "mA"  ECU
+   SG_ InternalTemp m0: 47|8@0+ (1,0) [0|255] "degC"  ECU
+   SG_ HeaterShortToGnd m0: 48|1@0+ (1,0) [0|1] ""  ECU
+   SG_ HeaterShortToBatt m0: 49|1@0+ (1,0) [0|1] ""  ECU
+   SG_ HeaterOpen m0: 50|1@0+ (1,0) [0|1] ""  ECU
+   SG_ SensorFailedToHeat m0: 51|1@0+ (1,0) [0|1] ""  ECU
+   SG_ SensorWireShort m0: 52|1@0+ (1,0) [0|1] ""  ECU
+   SG_ DutyCycle m0: 63|8@0+ (1,0) [0|100] "%"  ECU
+   SG_ SensorState m1: 15|8@0+ (1,0) [0|8] ""  ECU
+   SG_ VBatt m1: 23|16@0+ (0.01,0) [0|655.35] "V"  ECU
+   SG_ Ip m1: 39|16@0+ (0.001,0) [0|65.535] "mA"  ECU
+   SG_ Ri m1: 55|16@0+ (1,0) [0|65535] "Ohm"  ECU
+   SG_ CompoundId m2: 7|8@0+ (1,0) [0|2] ""  ECU
+   SG_ FirmwareVersionLetter m2: 15|8@0+ (1,0) [0|25] ""  ECU
+   SG_ FirmwareVersionNumber m2: 23|16@0+ (1,0) [0|65535] ""  ECU
+   SG_ SerialNumber m2: 39|16@0+ (1,0) [0|65535] ""  ECU
+
+BO_ 240 Motec_E888_Inputs: 8 Motec_E888
+   SG_ CompoundId M: 7|3@0+ (1,0) [0|8] "" ECU
+   SG_ AV1 m0: 4|13@0+ (0.001,0) [0|8.191] "voltage:V" ECU
+   SG_ AV2 m0: 23|16@0- (0.001,0) [-32.768|32.767] "voltage:V" ECU
+   SG_ TC1 m0: 39|16@0- (0.25,0) [-8192|8191.75] "temperature:C" ECU
+   SG_ TC2 m0: 55|16@0- (0.25,0) [-8192|8191.75] "temperature:C" ECU
+   SG_ AV3 m1: 4|13@0+ (0.001,0) [0|8.191] "voltage:V" ECU
+   SG_ AV4 m1: 23|16@0- (0.001,0) [-32.768|32.767] "voltage:V" ECU
+   SG_ TC3 m1: 39|16@0- (0.25,0) [-8192|8191.75] "temperature:C" ECU
+   SG_ TC4 m1: 55|16@0- (0.25,0) [-8192|8191.75] "temperature:C" ECU
+   SG_ AV5 m2: 4|13@0+ (0.001,0) [0|8.191] "voltage:V" ECU
+   SG_ AV6 m2: 23|16@0- (0.001,0) [-32.768|32.767] "voltage:V" ECU
+   SG_ TC5 m2: 39|16@0- (0.25,0) [-8192|8191.75] "temperature:C" ECU
+   SG_ TC6 m2: 55|16@0- (0.25,0) [-8192|8191.75] "temperature:C" ECU
+   SG_ AV7 m3: 4|13@0+ (0.001,0) [0|8.191] "voltage:V" ECU
+   SG_ TC7 m3: 23|16@0- (0.25,0) [-8192|8191.75] "temperature:C" ECU
+   SG_ Freq1 m3: 39|16@0- (0.1,0) [-3276.8|3276.7] "frequency:Hz" ECU
+   SG_ Freq2 m3: 55|16@0- (0.1,0) [-3276.8|3276.7] "frequency:Hz" ECU
+   SG_ AV8 m4: 4|13@0+ (0.001,0) [0|8.191] "voltage:V" ECU
+   SG_ TC8 m4: 23|16@0- (0.25,0) [-8192|8191.75] "temperature:C" ECU
+   SG_ Freq3 m4: 39|16@0- (0.1,0) [-3276.8|3276.7] "frequency:Hz" ECU
+   SG_ Freq4 m4: 55|16@0- (0.1,0) [-3276.8|3276.7] "frequency:Hz" ECU
+
+BO_ 241 Motec_E888_Diagnostics: 8 Motec_E888
+   SG_ CompoundId M: 7|4@0+ (1,0) [0|15] "" ECU
+   SG_ Cold_Junct_Comp1 m0: 3|12@0+ (1,-200) [-200|3895] "temperature:C" ECU
+   SG_ Cold_Junct_Comp2 m0: 23|16@0+ (1,-200) [-200|65335] "temperature:C" ECU
+   SG_ E888_Int_Temp m0: 39|16@0+ (1,-200) [0|65335] "temperature:C" ECU
+   SG_ Dig_6_In_State m0: 53|1@0+ (1,0) [0|1] "" ECU
+   SG_ Dig_5_In_State m0: 52|1@0+ (1,0) [0|1] "" ECU
+   SG_ Dig_4_In_State m0: 51|1@0+ (1,0) [0|1] "" ECU
+   SG_ Dig_3_In_State m0: 50|1@0+ (1,0) [0|1] "" ECU
+   SG_ Dig_2_In_State m0: 49|1@0+ (1,0) [0|1] "" ECU
+   SG_ Dig_1_In_State m0: 48|1@0+ (1,0) [0|1] "" ECU
+   SG_ Battery_Volts m1: 55|16@0- (0.01,0) [-327.68|327.67] "voltage:V" ECU
+   SG_ E888_Status_Flags m2: 23|16@0+ (1,0) [0|65535] "" ECU
+   SG_ Firmware_Version m2: 39|16@0+ (0.01,0) [0|655.35] "" ECU
+
+
+ CM_ BO_ 240 "Motec_E888_Inputs";
+CM_ SG_ 240 Freq1 "0-3200 Hz";
+CM_ SG_ 240 Freq2 "0-3200 Hz";
+CM_ SG_ 240 Freq3 "0-3200 Hz";
+CM_ SG_ 240 Freq4 "0-3200 Hz";
+
+CM_ BO_ 241 "Motec_E888_Diagnostics";
+CM_ SG_ 241 Dig_6_In_State "Shows the current state of the digital input";
+CM_ SG_ 241 Dig_5_In_State "Shows the current state of the digital input";
+CM_ SG_ 241 Dig_4_In_State "Shows the current state of the digital input";
+CM_ SG_ 241 Dig_3_In_State "Shows the current state of the digital input";
+CM_ SG_ 241 Dig_2_In_State "Shows the current state of the digital input";
+CM_ SG_ 241 Dig_1_In_State "Shows the current state of the digital input";
+
+VAL_ 1120 SensorState 0 "Start" 1 "Diagnostics" 2 "PreCal" 3 "Calibration" 4 "PostCal" 5 "Paused" 6 "Heating" 7 "Running" 8 "Cooling";
+VAL_ 1121 SensorState 0 "Start" 1 "Diagnostics" 2 "PreCal" 3 "Calibration" 4 "PostCal" 5 "Paused" 6 "Heating" 7 "Running" 8 "Cooling";
+
+BA_DEF_ BO_  "DBC_Author" STRING ;
+BA_DEF_ BU_  "TpNodeBaseAddress" HEX 0 65535;
+BA_DEF_ BO_  "GenMsgSendType" STRING ;
+BA_DEF_  "ProtocolType" STRING ;
+BA_DEF_  "NmType" STRING ;
+BA_DEF_ BO_  "GenMsgCycleTime" INT 1 10000;
+BA_DEF_ BO_  "GenMsgILSupport" ENUM  "No","Yes";
+BA_DEF_ BU_  "ILUsed" ENUM  "No","Yes";
+BA_DEF_  "VersionNumber" INT 0 10000;
+BA_DEF_  "VersionDay" INT 1 31;
+BA_DEF_  "VersionMonth" INT 1 12;
+BA_DEF_  "VersionYear" INT 2016 3000;
+BA_DEF_  "BusType" STRING ;
+BA_DEF_ BO_  "DBC_Author_Contact" STRING ;
+BA_DEF_DEF_  "DBC_Author_Contact" "CANbusInfo@AEMelectronics.com";
+BA_DEF_DEF_  "DBC_Author" "AEM_Performance_Electronics";
+BA_DEF_DEF_  "TpNodeBaseAddress" 0;
+BA_DEF_DEF_  "GenMsgSendType" "Cyclic";
+BA_DEF_DEF_  "ProtocolType" "";
+BA_DEF_DEF_  "NmType" "";
+BA_DEF_DEF_  "GenMsgCycleTime" 5;
+BA_DEF_DEF_  "GenMsgILSupport" "Yes";
+BA_DEF_DEF_  "ILUsed" "Yes";
+BA_DEF_DEF_  "VersionNumber" 0;
+BA_DEF_DEF_  "VersionDay" 15;
+BA_DEF_DEF_  "VersionMonth" 12;
+BA_DEF_DEF_  "VersionYear" 2016;
+BA_DEF_DEF_  "BusType" "Can";
+BA_ "VersionNumber" 0;
+BA_ "VersionDay" 15;
+BA_ "VersionMonth" 12;
+BA_ "BusType" "CAN";
+

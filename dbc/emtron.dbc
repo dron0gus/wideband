@@ -1,0 +1,114 @@
+VERSION ""
+
+
+NS_ :
+    NS_DESC_
+    CM_
+    BA_DEF_
+    BA_
+    VAL_
+    CAT_DEF_
+    CAT_
+    FILTER
+    BA_DEF_DEF_
+    EV_DATA_
+    ENVVAR_DATA_
+    SGTYPE_
+    SGTYPE_VAL_
+    BA_DEF_SGTYPE_
+    BA_SGTYPE_
+    SIG_TYPE_REF_
+    VAL_TABLE_
+    SIG_GROUP_
+    SIG_VALTYPE_
+    SIGTYPE_VALTYPE_
+    BO_TX_BU_
+    BA_DEF_REL_
+    BA_REL_
+    BA_DEF_DEF_REL_
+    BU_SG_REL_
+    BU_EV_REL_
+    BU_BO_REL_
+    SG_MUL_VAL_
+
+BS_: 
+BU_: Emtron_ELC Emtron_ETC4 ECU 
+BO_ 671 Emtron_AfrData: 8 Emtron_ELC
+   SG_ FrameIndex : 7|8@0+ (1,0) [0|255] "" ECU
+   SG_ Lambda : 15|16@0+ (0.001,0) [0|65.535] "lambda" ECU
+   SG_ PumpCurrent : 31|16@0+ (0.001,0) [0|65.535] "mA" ECU
+   SG_ VirtualGroundFault : 41|2@0+ (1,0) [0|3] "" ECU
+   SG_ NernstCellFault : 43|2@0+ (1,0) [0|3] "" ECU
+   SG_ PumpCurrentFault : 45|2@0+ (1,0) [0|3] "" ECU
+   SG_ HeaterFault : 47|2@0+ (1,0) [0|3] "" ECU
+   SG_ Status : 55|8@0+ (1,0) [0|255] "" ECU
+   SG_ HeaterDuty : 63|8@0+ (1,0) [0|100] "%" ECU
+
+BO_ 672 Emtron_AfrData: 8 Emtron_ELC
+   SG_ FrameIndex : 7|8@0+ (1,0) [0|255] "" ECU
+   SG_ Lambda : 15|16@0+ (0.001,0) [0|65.535] "lambda" ECU
+   SG_ PumpCurrent : 31|16@0+ (0.001,0) [0|65.535] "mA" ECU
+   SG_ VirtualGroundFault : 41|2@0+ (1,0) [0|3] "" ECU
+   SG_ NernstCellFault : 43|2@0+ (1,0) [0|3] "" ECU
+   SG_ PumpCurrentFault : 45|2@0+ (1,0) [0|3] "" ECU
+   SG_ HeaterFault : 47|2@0+ (1,0) [0|3] "" ECU
+   SG_ Status : 55|8@0+ (1,0) [0|255] "" ECU
+   SG_ HeaterDuty : 63|8@0+ (1,0) [0|100] "%" ECU
+
+BO_ 691 Emtron_ETC4: 8 Emtron_ETC4
+   SG_ Egt1 : 7|12@0+ (1,-50) [0|4095] "degC" ECU
+   SG_ Egt2 : 11|12@0+ (1,-50) [0|4095] "degC" ECU
+   SG_ Egt3 : 31|12@0+ (1,-50) [0|4095] "degC" ECU
+   SG_ Egt4 : 35|12@0+ (1,-50) [0|4095] "degC" ECU
+   SG_ ColdJunctionTemp : 55|8@0+ (1,0) [0|255] "degC" ECU
+
+CM_ BO_ 671 "Emtron AFR Channel 1";
+CM_ SG_ 671 FrameIndex "Frame index counter";
+CM_ SG_ 671 Lambda "Lambda value, 0.001 scale";
+CM_ SG_ 671 PumpCurrent "Pump current in mA, 0.001 scale";
+CM_ SG_ 671 VirtualGroundFault "Virtual ground fault status";
+CM_ SG_ 671 NernstCellFault "Nernst cell fault status";
+CM_ SG_ 671 PumpCurrentFault "Pump current fault status";
+CM_ SG_ 671 HeaterFault "Heater fault status";
+CM_ SG_ 671 Status "AFR status code";
+
+CM_ BO_ 672 "Emtron AFR Channel 2";
+CM_ SG_ 672 FrameIndex "Frame index counter";
+CM_ SG_ 672 Lambda "Lambda value, 0.001 scale";
+CM_ SG_ 672 PumpCurrent "Pump current in mA, 0.001 scale";
+CM_ SG_ 672 VirtualGroundFault "Virtual ground fault status";
+CM_ SG_ 672 NernstCellFault "Nernst cell fault status";
+CM_ SG_ 672 PumpCurrentFault "Pump current fault status";
+CM_ SG_ 672 HeaterFault "Heater fault status";
+CM_ SG_ 672 Status "AFR status code";
+
+VAL_ 671 VirtualGroundFault 0 "ShortToGround" 1 "IcPowerSupplyLow" 2 "ShortToVbatt" 3 "Ok";
+VAL_ 671 NernstCellFault 0 "ShortToGround" 1 "IcPowerSupplyLow" 2 "ShortToVbatt" 3 "Ok";
+VAL_ 671 PumpCurrentFault 0 "ShortToGround" 1 "IcPowerSupplyLow" 2 "ShortToVbatt" 3 "Ok";
+VAL_ 671 HeaterFault 0 "ShortToGround" 1 "IcOpenLoad" 2 "ShortToVbatt" 3 "Ok";
+VAL_ 671 Status 0 "Off" 1 "NormalOperation" 2 "SensorWarmingUp" 3 "RpmLockout" 4 "PostStartLockout" 5 "ReadingCalibrationData" 14 "HeaterUnderTemperature" 15 "HeaterOverTemperature" 16 "SensorShutdownThermalShock" 17 "CannotReadChipId" 18 "SetPumpReferenceCommandInvalid" 19 "CalibrateCommandInvalid" 20 "StandaloneCommandInvalid" 21 "NernstCalDataInvalid" 22 "PumpCalDataInvalid";
+
+
+VAL_ 672 VirtualGroundFault 0 "ShortToGround" 1 "IcPowerSupplyLow" 2 "ShortToVbatt" 3 "Ok";
+VAL_ 672 NernstCellFault 0 "ShortToGround" 1 "IcPowerSupplyLow" 2 "ShortToVbatt" 3 "Ok";
+VAL_ 672 PumpCurrentFault 0 "ShortToGround" 1 "IcPowerSupplyLow" 2 "ShortToVbatt" 3 "Ok";
+VAL_ 672 HeaterFault 0 "ShortToGround" 1 "IcOpenLoad" 2 "ShortToVbatt" 3 "Ok";
+VAL_ 672 Status 0 "Off" 1 "NormalOperation" 2 "SensorWarmingUp" 3 "RpmLockout" 4 "PostStartLockout" 5 "ReadingCalibrationData" 14 "HeaterUnderTemperature" 15 "HeaterOverTemperature" 16 "SensorShutdownThermalShock" 17 "CannotReadChipId" 18 "SetPumpReferenceCommandInvalid" 19 "CalibrateCommandInvalid" 20 "StandaloneCommandInvalid" 21 "NernstCalDataInvalid" 22 "PumpCalDataInvalid";
+
+
+
+CM_ BO_ 691 "Emtron ETC4 EGT Protocol. Base ID 0x2B3 (691), supports up to 4 EGT channels";
+CM_ SG_ 691 Egt1 "EGT channel 1, 12-bit value with -50C offset";
+CM_ SG_ 691 Egt2 "EGT channel 2, 12-bit value with -50C offset";
+CM_ SG_ 691 Egt3 "EGT channel 3, 12-bit value with -50C offset";
+CM_ SG_ 691 Egt4 "EGT channel 4, 12-bit value with -50C offset";
+BA_DEF_ "BusType" STRING ;
+BA_DEF_ BO_ "GenMsgBackgroundColor" STRING ;
+BA_DEF_ BO_ "GenMsgForegroundColor" STRING ;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_DEF_DEF_ "BusType" "CAN";
+BA_DEF_DEF_ "GenMsgBackgroundColor" "#ffffff";
+BA_DEF_DEF_ "GenMsgForegroundColor" "#000000";
+BA_DEF_DEF_ "matchingcriteria" 0;
+BA_DEF_DEF_ "filterlabeling" 1;

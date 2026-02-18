@@ -1,0 +1,109 @@
+VERSION ""
+
+
+NS_ :
+    NS_DESC_
+    CM_
+    BA_DEF_
+    BA_
+    VAL_
+    CAT_DEF_
+    CAT_
+    FILTER
+    BA_DEF_DEF_
+    EV_DATA_
+    ENVVAR_DATA_
+    SGTYPE_
+    SGTYPE_VAL_
+    BA_DEF_SGTYPE_
+    BA_SGTYPE_
+    SIG_TYPE_REF_
+    VAL_TABLE_
+    SIG_GROUP_
+    SIG_VALTYPE_
+    SIGTYPE_VALTYPE_
+    BO_TX_BU_
+    BA_DEF_REL_
+    BA_REL_
+    BA_DEF_DEF_REL_
+    BU_SG_REL_
+    BU_EV_REL_
+    BU_BO_REL_
+    SG_MUL_VAL_
+
+BS_: 
+BU_: Haltech_WB2 Haltech_TCA ECU 
+
+BO_ 688 Haltech_WB2A: 8 Haltech_WB2
+   SG_ Lambda1 : 7|16@0+ (0.000976563,0) [0|64] "lambda" ECU
+   SG_ Lambda2 : 23|16@0+ (0.000976563,0) [0|64] "lambda" ECU
+   SG_ RSense1 : 39|8@0+ (1,0) [0|255] "Ohm" ECU
+   SG_ RSense2 : 47|8@0+ (1,0) [0|255] "Ohm" ECU
+   SG_ Sensor1Flags : 51|4@0+ (1,0) [0|5] "" ECU
+   SG_ Sensor2Flags : 55|4@0+ (1,0) [0|5] "" ECU
+   SG_ VBatt : 63|8@0+ (0.0784314,0) [0|20] "V" ECU
+
+BO_ 692 Haltech_WB2B: 8 Haltech_WB2
+   SG_ Lambda1 : 7|16@0+ (0.000976563,0) [0|64] "lambda" ECU
+   SG_ Lambda2 : 23|16@0+ (0.000976563,0) [0|64] "lambda" ECU
+   SG_ RSense1 : 39|8@0+ (1,0) [0|255] "Ohm" ECU
+   SG_ RSense2 : 47|8@0+ (1,0) [0|255] "Ohm" ECU
+   SG_ Sensor1Flags : 51|4@0+ (1,0) [0|5] "" ECU
+   SG_ Sensor2Flags : 55|4@0+ (1,0) [0|5] "" ECU
+   SG_ VBatt : 63|8@0+ (0.0784314,0) [0|20] "V" ECU
+
+BO_ 694 Haltech_WB2C: 8 Haltech_WB2
+   SG_ Lambda1 : 7|16@0+ (0.000976563,0) [0|64] "lambda" ECU
+   SG_ Lambda2 : 23|16@0+ (0.000976563,0) [0|64] "lambda" ECU
+   SG_ RSense1 : 39|8@0+ (1,0) [0|255] "Ohm" ECU
+   SG_ RSense2 : 47|8@0+ (1,0) [0|255] "Ohm" ECU
+   SG_ Sensor1Flags : 51|4@0+ (1,0) [0|5] "" ECU
+   SG_ Sensor2Flags : 55|4@0+ (1,0) [0|5] "" ECU
+   SG_ VBatt : 63|8@0+ (0.0784314,0) [0|20] "V" ECU
+
+BO_ 696 Haltech_WB2D: 8 Haltech_WB2
+   SG_ Lambda1 : 7|16@0+ (0.000976563,0) [0|64] "lambda" ECU
+   SG_ Lambda2 : 23|16@0+ (0.000976563,0) [0|64] "lambda" ECU
+   SG_ RSense1 : 39|8@0+ (1,0) [0|255] "Ohm" ECU
+   SG_ RSense2 : 47|8@0+ (1,0) [0|255] "Ohm" ECU
+   SG_ Sensor1Flags : 51|4@0+ (1,0) [0|5] "" ECU
+   SG_ Sensor2Flags : 55|4@0+ (1,0) [0|5] "" ECU
+   SG_ VBatt : 63|8@0+ (0.0784314,0) [0|20] "V" ECU
+
+BO_ 716 Haltech_TCA_Box1: 8 Haltech_TCA
+   SG_ Egt1 : 7|16@0-  (0.407003,-250) [-250|16133.5] "degC" ECU
+   SG_ Egt2 : 23|16@0- (0.407003,-250) [-250|16133.5] "degC" ECU
+   SG_ Egt3 : 39|16@0- (0.407003,-250) [-250|16133.5] "degC" ECU
+   SG_ Egt4 : 55|16@0- (0.407003,-250) [-250|16133.5] "degC" ECU
+
+BO_ 717 Haltech_TCA_Box2: 8 Haltech_TCA
+   SG_ Egt1 : 7|16@0-  (0.407003,-250) [-250|16133.5] "degC" ECU
+   SG_ Egt2 : 23|16@0- (0.407003,-250) [-250|16133.5] "degC" ECU
+   SG_ Egt3 : 39|16@0- (0.407003,-250) [-250|16133.5] "degC" ECU
+   SG_ Egt4 : 55|16@0- (0.407003,-250) [-250|16133.5] "degC" ECU
+
+CM_ BO_ 688 "Haltech WB2A";
+CM_ SG_ 688 Lambda1 "Lambda sensor 1. Value = 32767 indicates free air cal, otherwise Lambda = Value / 1024";
+CM_ SG_ 688 Lambda2 "Lambda sensor 2. Value = 32767 indicates free air cal, otherwise Lambda = Value / 1024";
+CM_ SG_ 688 RSense1 "Sensor 1 internal resistance in Ohms";
+CM_ SG_ 688 RSense2 "Sensor 2 internal resistance in Ohms";
+CM_ SG_ 688 VBatt "Battery voltage. Value = x * 20 / 255";
+CM_ BO_ 692 "Haltech WB2B";
+CM_ BO_ 694 "Haltech WB2C";
+CM_ BO_ 696 "Haltech WB2D";
+CM_ BO_ 716 "Haltech TCA Box A (TC 1-4)";
+CM_ BO_ 717 "Haltech TCA Box B (TC 5-8)";
+BA_DEF_ "BusType" STRING ;
+BA_DEF_ BO_ "GenMsgBackgroundColor" STRING ;
+BA_DEF_ BO_ "GenMsgForegroundColor" STRING ;
+BA_DEF_DEF_ "BusType" "CAN";
+BA_DEF_DEF_ "GenMsgBackgroundColor" "#ffffff";
+BA_DEF_DEF_ "GenMsgForegroundColor" "#000000";
+VAL_ 688 Sensor1Flags 0 "None" 1 "LowBattery" 2 "HighBattery" 3 "SensorShortCircuit" 4 "SensorOpenCircuit" 5 "SensorCold";
+VAL_ 688 Sensor2Flags 0 "None" 1 "LowBattery" 2 "HighBattery" 3 "SensorShortCircuit" 4 "SensorOpenCircuit" 5 "SensorCold";
+VAL_ 692 Sensor1Flags 0 "None" 1 "LowBattery" 2 "HighBattery" 3 "SensorShortCircuit" 4 "SensorOpenCircuit" 5 "SensorCold";
+VAL_ 692 Sensor2Flags 0 "None" 1 "LowBattery" 2 "HighBattery" 3 "SensorShortCircuit" 4 "SensorOpenCircuit" 5 "SensorCold";
+VAL_ 694 Sensor1Flags 0 "None" 1 "LowBattery" 2 "HighBattery" 3 "SensorShortCircuit" 4 "SensorOpenCircuit" 5 "SensorCold";
+VAL_ 694 Sensor2Flags 0 "None" 1 "LowBattery" 2 "HighBattery" 3 "SensorShortCircuit" 4 "SensorOpenCircuit" 5 "SensorCold";
+VAL_ 696 Sensor1Flags 0 "None" 1 "LowBattery" 2 "HighBattery" 3 "SensorShortCircuit" 4 "SensorOpenCircuit" 5 "SensorCold";
+VAL_ 696 Sensor2Flags 0 "None" 1 "LowBattery" 2 "HighBattery" 3 "SensorShortCircuit" 4 "SensorOpenCircuit" 5 "SensorCold";

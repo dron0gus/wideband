@@ -1,0 +1,124 @@
+VERSION ""
+
+
+NS_ :
+    NS_DESC_
+    CM_
+    BA_DEF_
+    BA_
+    VAL_
+    CAT_DEF_
+    CAT_
+    FILTER
+    BA_DEF_DEF_
+    EV_DATA_
+    ENVVAR_DATA_
+    SGTYPE_
+    SGTYPE_VAL_
+    BA_DEF_SGTYPE_
+    BA_SGTYPE_
+    SIG_TYPE_REF_
+    VAL_TABLE_
+    SIG_GROUP_
+    SIG_VALTYPE_
+    SIGTYPE_VALTYPE_
+    BO_TX_BU_
+    BA_DEF_REL_
+    BA_REL_
+    BA_DEF_DEF_REL_
+    BU_SG_REL_
+    BU_EV_REL_
+    BU_BO_REL_
+    SG_MUL_VAL_
+
+BS_: 
+BU_: ECUMaster_L2C ECUMaster_EGT ECU
+
+BO_ 1636 EcuMaster_AfrData1: 8 ECUMaster_L2C
+   SG_ SystemVolts : 7|16@0+ (0.01,0) [0|655.35] "V" ECU
+   SG_ HeaterPower : 23|8@0+ (0.392157,0) [0|100] "%" ECU
+   SG_ SensorTemp : 31|8@0+ (4,0) [0|1020] "degC" ECU
+   SG_ Lambda : 39|16@0+ (0.001,0) [0|65.535] "lambda" ECU
+   SG_ VmShortVcc : 48|1@0+ (1,0) [0|1] "" ECU
+   SG_ VmShortGnd : 49|1@0+ (1,0) [0|1] "" ECU
+   SG_ UnShortVcc : 50|1@0+ (1,0) [0|1] "" ECU
+   SG_ UnShortGnd : 51|1@0+ (1,0) [0|1] "" ECU
+   SG_ IaIpShortVcc : 52|1@0+ (1,0) [0|1] "" ECU
+   SG_ IaIpShortGnd : 53|1@0+ (1,0) [0|1] "" ECU
+   SG_ VubLowVoltage : 54|1@0+ (1,0) [0|1] "" ECU
+   SG_ HeaterShortVcc : 55|1@0+ (1,0) [0|1] "" ECU
+   SG_ HeaterShortGnd : 56|1@0+ (1,0) [0|1] "" ECU
+   SG_ HeaterOpenLoad : 57|1@0+ (1,0) [0|1] "" ECU
+   SG_ CalibrationState : 60|3@0+ (1,0) [0|3] "" ECU
+   SG_ DeviceVersion : 63|3@0+ (1,0) [0|7] "" ECU
+
+BO_ 1637 EcuMaster_AfrData2: 8 ECUMaster_L2C
+   SG_ IpCurrent : 7|16@0- (0.001,0) [-32.768|32.767] "mA" ECU
+   SG_ OxygenConcentration : 23|16@0- (0.01,0) [-327.68|327.67] "%" ECU
+   SG_ Ri : 39|16@0+ (0.1,0) [0|6553.5] "Ohm" ECU
+
+BO_ 1638 EcuMaster_AfrData1: 8 ECUMaster_L2C
+   SG_ SystemVolts : 7|16@0+ (0.01,0) [0|655.35] "V" ECU
+   SG_ HeaterPower : 23|8@0+ (0.392157,0) [0|100] "%" ECU
+   SG_ SensorTemp : 31|8@0+ (4,0) [0|1020] "degC" ECU
+   SG_ Lambda : 39|16@0+ (0.001,0) [0|65.535] "lambda" ECU
+   SG_ VmShortVcc : 48|1@0+ (1,0) [0|1] "" ECU
+   SG_ VmShortGnd : 49|1@0+ (1,0) [0|1] "" ECU
+   SG_ UnShortVcc : 50|1@0+ (1,0) [0|1] "" ECU
+   SG_ UnShortGnd : 51|1@0+ (1,0) [0|1] "" ECU
+   SG_ IaIpShortVcc : 52|1@0+ (1,0) [0|1] "" ECU
+   SG_ IaIpShortGnd : 53|1@0+ (1,0) [0|1] "" ECU
+   SG_ VubLowVoltage : 54|1@0+ (1,0) [0|1] "" ECU
+   SG_ HeaterShortVcc : 55|1@0+ (1,0) [0|1] "" ECU
+   SG_ HeaterShortGnd : 56|1@0+ (1,0) [0|1] "" ECU
+   SG_ HeaterOpenLoad : 57|1@0+ (1,0) [0|1] "" ECU
+   SG_ CalibrationState : 60|3@0+ (1,0) [0|3] "" ECU
+   SG_ DeviceVersion : 63|3@0+ (1,0) [0|7] "" ECU
+
+BO_ 1639 EcuMaster_AfrData2: 8 ECUMaster_L2C
+   SG_ IpCurrent : 7|16@0- (0.001,0) [-32.768|32.767] "mA" ECU
+   SG_ OxygenConcentration : 23|16@0- (0.01,0) [-327.68|327.67] "%" ECU
+   SG_ Ri : 39|16@0+ (0.1,0) [0|6553.5] "Ohm" ECU
+
+BO_ 1552 EcuMaster_Classic_EGT: 8 ECUMaster_EGT
+   SG_ Egt1 : 7|16@0- (1,0) [-32768|32767] "degC" ECU
+   SG_ Egt2 : 23|16@0- (1,0) [-32768|32767] "degC" ECU
+   SG_ Egt3 : 39|16@0- (1,0) [-32768|32767] "degC" ECU
+   SG_ Egt4 : 55|16@0- (1,0) [-32768|32767] "degC" ECU
+
+BO_ 1632 EcuMaster_Black_EGT: 8 ECUMaster_EGT
+   SG_ Egt1 : 7|16@0- (1,0) [-32768|32767] "degC" ECU
+   SG_ Egt2 : 23|16@0- (1,0) [-32768|32767] "degC" ECU
+   SG_ Egt3 : 39|16@0- (1,0) [-32768|32767] "degC" ECU
+   SG_ Egt4 : 55|16@0- (1,0) [-32768|32767] "degC" ECU
+
+CM_ BO_ 1636 "EcuMaster AFR Data 1. Base ID 0x664 (1636), 1 Mbps, 10 ms period";
+CM_ SG_ 1636 HeaterPower "0-100%, scaling: 100/255";
+CM_ SG_ 1636 SensorTemp "Sensor temperature in degC, scaling: 4:1";
+CM_ SG_ 1636 CalibrationState "0=Start, 1=WaitForSPIReset, 2=Finished, 3=Error";
+CM_ SG_ 1636 DeviceVersion "0=LSU42, 1=LSU49, 2=LSUADV";
+CM_ BO_ 1637 "EcuMaster AFR Data 2. Base ID + 1 = 0x665 (1637)";
+CM_ SG_ 1637 IpCurrent "Pump current in mA";
+CM_ SG_ 1637 OxygenConcentration "Oxygen concentration in %";
+CM_ SG_ 1637 Ri "Sensor internal resistance in Ohms";
+CM_ BO_ 1638 "EcuMaster AFR Data 1. Base ID 0x664 (1636), 1 Mbps, 10 ms period";
+CM_ SG_ 1638 HeaterPower "0-100%, scaling: 100/255";
+CM_ SG_ 1638 SensorTemp "Sensor temperature in degC, scaling: 4:1";
+CM_ SG_ 1638 CalibrationState "0=Start, 1=WaitForSPIReset, 2=Finished, 3=Error";
+CM_ SG_ 1638 DeviceVersion "0=LSU42, 1=LSU49, 2=LSUADV";
+CM_ BO_ 1639 "EcuMaster AFR Data 2. Base ID + 1 = 0x665 (1637)";
+CM_ SG_ 1639 IpCurrent "Pump current in mA";
+CM_ SG_ 1639 OxygenConcentration "Oxygen concentration in %";
+CM_ SG_ 1639 Ri "Sensor internal resistance in Ohms";
+CM_ BO_ 1552 "EcuMaster Classic EGT. Base ID 0x610 (1552), supports up to 4 EGT channels";
+CM_ BO_ 1632 "EcuMaster Black EGT. Base ID 0x660 (1632), supports up to 4 EGT channels";
+BA_DEF_ "BusType" STRING ;
+BA_DEF_ BO_ "GenMsgBackgroundColor" STRING ;
+BA_DEF_ BO_ "GenMsgForegroundColor" STRING ;
+BA_DEF_DEF_ "BusType" "CAN";
+BA_DEF_DEF_ "GenMsgBackgroundColor" "#ffffff";
+BA_DEF_DEF_ "GenMsgForegroundColor" "#000000";
+VAL_ 1636 CalibrationState 0 "Start" 1 "WaitForSPIReset" 2 "Finished" 3 "Error";
+VAL_ 1636 DeviceVersion 0 "LSU42" 1 "LSU49" 2 "LSUADV";
+VAL_ 1638 CalibrationState 0 "Start" 1 "WaitForSPIReset" 2 "Finished" 3 "Error";
+VAL_ 1638 DeviceVersion 0 "LSU42" 1 "LSU49" 2 "LSUADV";

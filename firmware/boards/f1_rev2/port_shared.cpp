@@ -11,6 +11,6 @@ static const CANConfig canConfig500 =
     CAN_BTR_SJW(0) | CAN_BTR_BRP(4 - 1)  | CAN_BTR_TS1(13 - 1) | CAN_BTR_TS2(2 - 1),
 };
 
-const CANConfig& GetCanConfig() {
+const CANConfig& GetCanConfig(uint8_t mode) {
     return canConfig500;
 }
