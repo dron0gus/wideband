@@ -109,7 +109,7 @@ LIB_PATH  =
 #|--------------------------------------------------------------------------------------|
 STDFLAGS    = -mcpu=cortex-m3 -mthumb -std=gnu11 -fstack-usage -Wall -specs=nano.specs
 STDFLAGS   += -fdata-sections -ffunction-sections -Wall -g -Wno-strict-aliasing
-OPTFLAGS    = -Os
+OPTFLAGS    = -Os -flto
 CFLAGS      = $(STDFLAGS) $(OPTFLAGS)
 CFLAGS     += -DUSE_FULL_LL_DRIVER -DUSE_HAL_DRIVER -DSTM32F103xB
 CFLAGS     += -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))"
