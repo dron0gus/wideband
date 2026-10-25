@@ -66,7 +66,8 @@ if [ $USE_OPENBLT = "yes" ]; then
   echo "Invoking hex2dfu for composite OpenBLT+Wideband image (for DFU util)"
   $HEX2DFU -i ${OPENBLT_HEX} -i build/wideband.hex -C 0x1C -o ${DELIVER_DIR}/wideband.dfu -b ${DELIVER_DIR}/wideband.bin
   echo "Creating composite hex file"
-  $SREC_CAT ${OPENBLT_HEX} -Intel ${DELIVER_DIR}/wideband.bin -binary -offset 0x08000000 -o ${DELIVER_DIR}/wideband.hex -Intel
+  # wideband.bin already contains bootloader+app with CRC, just convert to hex
+  $SREC_CAT ${DELIVER_DIR}/wideband.bin -binary -offset 0x08000000 -o ${DELIVER_DIR}/wideband.hex -Intel
 else
   echo "Bin for raw flashing"
   cp build/wideband.bin ${DELIVER_DIR}
@@ -83,3 +84,10 @@ fi
 echo ""
 echo "${DELIVER_DIR} folder content:"
 ls -l ${DELIVER_DIR}
+
+if [ $USE_OPENBLT = "yes" ]; then
+  echo ""
+  echo "Adding OpenBLT CRC to build/ files for debugging with openocd/gdb"
+  echo "Note: delivery files have NO CRC - OpenBLT adds it during flashing for safety"
+  python3 boards/add_openblt_crc.py build/wideband.elf
+fi
