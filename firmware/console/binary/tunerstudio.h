@@ -42,7 +42,7 @@ typedef struct {
 	uint16_t count;
 } __attribute__((packed)) TunerStudioDataPacketHeader;
 
-#define CONNECTIVITY_THREAD_STACK 	(512)
+#define CONNECTIVITY_THREAD_STACK 	(1024)
 #define CONNECTIVITY_THREAD_PRIO	(NORMALPRIO + 1)
 
 class TunerstudioThread : public ThreadController<CONNECTIVITY_THREAD_STACK> {
