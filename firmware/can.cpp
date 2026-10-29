@@ -19,7 +19,7 @@ static Configuration* configuration;
 static THD_WORKING_AREA(waCanTxThread, 512);
 void CanTxThread(void*)
 {
-    int cycle;
+    uint8_t cycle = 0;
     chRegSetThreadName("CAN Tx");
 
     // Current system time.
