@@ -45,7 +45,6 @@ static void SamplingThread(void*)
     while(true)
     {
         auto result = AnalogSampleFinish();
-        AnalogSampleStart();
 
         // Toggle the pin after sampling so that any switching noise occurs while we're doing our math instead of when sampling
         ToggleESRDriver(GetSensorType());
@@ -59,6 +58,8 @@ static void SamplingThread(void*)
         {
             samplers[ch].ApplySample(result.ch[ch], result.VirtualGroundVoltageInt);
         }
+
+        AnalogSampleStart();
 
 #if defined(TS_ENABLED)
         /* tunerstudio */
