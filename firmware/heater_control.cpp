@@ -7,25 +7,46 @@
 
 using namespace wbo;
 
-static const PidConfig heaterPidConfig =
+// PID config for LSU 4.9 and LSU ADV sensors
+static const PidConfig heaterPidConfig49 =
 {
     .kP = 0.3f,      // kP
     .kI = 0.3f,      // kI
     .kD = 0.01f,     // kD
-    .clamp = 3.0f,      // Integrator clamp (volts)
+    .clamp = 3.0f,   // Integrator clamp (volts)
+};
+
+// PID config for LSU 4.2 sensor - gentler control to prevent oscillation
+static const PidConfig heaterPidConfig42 =
+{
+    .kP = 0.25f,     // kP - slightly lower proportional gain
+    .kI = 0.15f,     // kI - much lower integral to prevent windup/overshoot
+    .kD = 0.03f,     // kD - higher derivative to dampen oscillations
+    .clamp = 3.0f,   // Integrator clamp (volts)
 };
 
 HeaterControllerBase::HeaterControllerBase(int ch)
-    : m_pid(heaterPidConfig, HEATER_CONTROL_PERIOD)
+    : m_pid(heaterPidConfig49, HEATER_CONTROL_PERIOD)  // Default to LSU 4.9 config
     , ch(ch)
 {
 }
 
-void HeaterControllerBase::Configure(float targetTempC, float targetEsr, struct HeaterConfig* configuration)
+void HeaterControllerBase::Configure(float targetTempC, float targetEsr, struct HeaterConfig* configuration, SensorType sensorType)
 {
     m_targetTempC = targetTempC;
     m_targetEsr = targetEsr;
     m_configuration = configuration;
+
+    // Use different PID parameters based on sensor type
+    // LSU 4.2 needs gentler control to prevent oscillation
+    if (sensorType == SensorType::LSU42)
+    {
+        m_pid.setCoefficients(heaterPidConfig42);
+    }
+    else
+    {
+        m_pid.setCoefficients(heaterPidConfig49);
+    }
 
     m_preheatTimer.reset();
     m_warmupTimer.reset();

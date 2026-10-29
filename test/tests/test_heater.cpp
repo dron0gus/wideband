@@ -3,6 +3,7 @@
 
 #include "fixed_point.h"
 #include "heater_control.h"
+#include "port.h"
 #include "sampling.h"
 
 struct MockConfiguration {
@@ -25,7 +26,7 @@ struct MockHeater : public HeaterControllerBase
 TEST(HeaterStateOutput, Preheat)
 {
     MockHeater dut;
-    dut.Configure(780, 300, &mockConfig.heaterConfig);
+    dut.Configure(780, 300, &mockConfig.heaterConfig, SensorType::LSU49);
 
     // Shouldn't depend upon sensor ESR
     EXPECT_EQ(2.0f, dut.GetVoltageForState(HeaterState::Preheat, 0));
@@ -43,7 +44,7 @@ TEST(HeaterStateOutput, WarmupRamp)
 TEST(HeaterStateOutput, ClosedLoop)
 {
     MockHeater dut;
-    dut.Configure(780, 300, &mockConfig.heaterConfig);
+    dut.Configure(780, 300, &mockConfig.heaterConfig, SensorType::LSU49);
 
     // At target -> zero output but with 7.5v offset
     EXPECT_EQ(dut.GetVoltageForState(HeaterState::ClosedLoop, 300), 7.5f);
@@ -58,7 +59,7 @@ TEST(HeaterStateOutput, ClosedLoop)
 TEST(HeaterStateOutput, Cases)
 {
     MockHeater dut;
-    dut.Configure(780, 300, &mockConfig.heaterConfig);
+    dut.Configure(780, 300, &mockConfig.heaterConfig, SensorType::LSU49);
 
     EXPECT_EQ(0, dut.GetVoltageForState(HeaterState::Stopped, 0));
     EXPECT_EQ(0, dut.GetVoltageForState(HeaterState::NoHeaterSupply, 0));
@@ -68,7 +69,7 @@ TEST(HeaterStateMachine, PreheatToWarmupTimeout)
 {
     MockHeater dut;
     Timer::setMockTime(0);
-    dut.Configure(780, 300, &mockConfig.heaterConfig);
+    dut.Configure(780, 300, &mockConfig.heaterConfig, SensorType::LSU49);
 
     // For a while it should stay in preheat
     Timer::setMockTime(1e6);
@@ -87,7 +88,7 @@ TEST(HeaterStateMachine, PreheatToWarmupAlreadyWarm)
 {
     MockHeater dut;
     Timer::setMockTime(0);
-    dut.Configure(780, 300, &mockConfig.heaterConfig);
+    dut.Configure(780, 300, &mockConfig.heaterConfig, SensorType::LSU49);
 
     // Preheat for a little while
     for (size_t i = 0; i < 10; i++)
@@ -103,7 +104,7 @@ TEST(HeaterStateMachine, WarmupToClosedLoop)
 {
     MockHeater dut;
     Timer::setMockTime(0);
-    dut.Configure(780, 300, &mockConfig.heaterConfig);
+    dut.Configure(780, 300, &mockConfig.heaterConfig, SensorType::LSU49);
 
     // Warm up for a little while
     for (size_t i = 0; i < 10; i++)
@@ -119,7 +120,7 @@ TEST(HeaterStateMachine, WarmupTimeout)
 {
     MockHeater dut;
     Timer::setMockTime(0);
-    dut.Configure(780, 300, &mockConfig.heaterConfig);
+    dut.Configure(780, 300, &mockConfig.heaterConfig, SensorType::LSU49);
 
     // For a while it should stay in warmup
     Timer::setMockTime(1e6);
@@ -138,7 +139,7 @@ TEST(HeaterStateMachine, ClosedLoop)
 {
     MockHeater dut;
     Timer::setMockTime(0);
-    dut.Configure(780, 300, &mockConfig.heaterConfig);
+    dut.Configure(780, 300, &mockConfig.heaterConfig, SensorType::LSU49);
 
     // Check 5 sec stabilization timeout
     EXPECT_EQ(HeaterState::ClosedLoop, dut.GetNextState(HeaterState::ClosedLoop, HeaterAllow::Allowed, 12, 780));
@@ -179,7 +180,7 @@ TEST(HeaterStateMachine, ClosedLoop)
 TEST(HeaterStateMachine, TerminalStates)
 {
     MockHeater dut;
-    dut.Configure(780, 300, &mockConfig.heaterConfig);
+    dut.Configure(780, 300, &mockConfig.heaterConfig, SensorType::LSU49);
 
     EXPECT_EQ(HeaterState::Stopped, dut.GetNextState(HeaterState::Stopped, HeaterAllow::Allowed, 12, 780));
 }
@@ -201,7 +202,7 @@ TEST(HeaterOutput, NegativeVoltageDoesNotBecomePositiveDuty)
     Timer::setMockTime(0);
     NiceMock<MockHeater> dut;
     NiceMock<MockHeaterSampler> sampler;
-    dut.Configure(730, 80, &mockConfig.heaterConfig);
+    dut.Configure(730, 80, &mockConfig.heaterConfig, SensorType::LSU42);
     ON_CALL(sampler, GetSensorTemperature()).WillByDefault(Return(750));
     ON_CALL(sampler, GetSensorInternalResistance()).WillByDefault(Return(80));
     dut.Update(sampler, HeaterAllow::Allowed); // warmup
@@ -223,7 +224,7 @@ TEST(HeaterOutput, VoltageAndTelemetryAreLimitedToSupply)
     Timer::setMockTime(0);
     NiceMock<MockHeater> dut;
     NiceMock<MockHeaterSampler> sampler;
-    dut.Configure(730, 80, &mockConfig.heaterConfig);
+    dut.Configure(730, 80, &mockConfig.heaterConfig, SensorType::LSU42);
     ON_CALL(sampler, GetSensorTemperature()).WillByDefault(Return(750));
     ON_CALL(sampler, GetSensorInternalResistance()).WillByDefault(Return(200));
     testRemoteBatteryVoltage = 10;

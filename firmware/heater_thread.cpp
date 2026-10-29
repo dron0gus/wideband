@@ -77,21 +77,23 @@ static void HeaterThread(void*)
     struct HeaterConfig* configuration = &GetConfiguration()->heaterConfig;
 
     // Configure heater controllers for sensor type
+    SensorType sensorType = GetSensorType();
+
     for (int i = 0; i < AFR_CHANNELS; i++)
     {
         auto& h = heaterControllers[i];
 
-        switch (GetSensorType())
+        switch (sensorType)
         {
             case SensorType::LSU42:
-                h.Configure(730, 80, configuration);
+                h.Configure(730, 80, configuration, sensorType);
                 break;
             case SensorType::LSUADV:
-                h.Configure(785, 300, configuration);
+                h.Configure(785, 300, configuration, sensorType);
                 break;
             case SensorType::LSU49:
             default:
-                h.Configure(780, 300, configuration);
+                h.Configure(780, 300, configuration, sensorType);
                 break;
         }
     }

@@ -4,6 +4,7 @@
 #include "sampling.h"
 #include "pump_dac.h"
 #include "pid.h"
+#include "port.h"
 
 #include "ch.h"
 
@@ -14,6 +15,14 @@ struct pump_control_state {
 PidConfig pumpPidConfig = {
     .kP = 50,
     .kI = 10000,
+    .kD = 0,
+    .clamp = 10,
+};
+
+// LSU4.2 free-air bench validation: Kp=50 oscillates; Kp=10 is stable.
+static const PidConfig pumpPidConfig42 = {
+    .kP = 10.0,
+    .kI = 200,
     .kD = 0,
     .clamp = 10,
 };
@@ -91,6 +100,14 @@ static THD_WORKING_AREA(waPumpThread, 256);
 static void PumpThread(void*)
 {
     chRegSetThreadName("Pump");
+
+    if (GetSensorType() == SensorType::LSU42)
+    {
+        for (auto& s : state)
+        {
+            s.pumpPid.setCoefficients(pumpPidConfig42);
+        }
+    }
 
     while(true)
     {

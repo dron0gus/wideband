@@ -11,7 +11,7 @@ struct PidConfig
 class Pid
 {
 public:
-    Pid(const PidConfig& config, float periodMs) 
+    Pid(const PidConfig& config, float periodMs)
         : m_config(config)
         , m_periodSec(1e-3 * periodMs)
     {
@@ -19,8 +19,16 @@ public:
 
     float GetOutput(float setpoint, float observation);
 
+    void setCoefficients(const PidConfig& config)
+    {
+        m_config = config;
+        // Reset integrator when changing coefficients to prevent windup
+        m_integrator = 0;
+        m_lastError = 0;
+    }
+
 private:
-    const PidConfig& m_config;
+    PidConfig m_config;
     const float m_periodSec;
 
     float m_lastError = 0;

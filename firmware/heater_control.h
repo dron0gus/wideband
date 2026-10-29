@@ -9,6 +9,8 @@
 #include "timer.h"
 #include "fixed_point.h"
 
+enum class SensorType : uint8_t;
+
 enum class HeaterState
 {
     Preheat,
@@ -41,7 +43,7 @@ class HeaterControllerBase : public IHeaterController
 {
 public:
     HeaterControllerBase(int ch);
-    void Configure(float targetTempC, float targetEsr, struct HeaterConfig* configuration);
+    void Configure(float targetTempC, float targetEsr, struct HeaterConfig* configuration, SensorType sensorType);
     void Update(const ISampler& sampler, HeaterAllow heaterAllowState) override;
 
     bool IsRunningClosedLoop() const override;
