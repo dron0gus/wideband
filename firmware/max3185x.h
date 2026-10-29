@@ -33,6 +33,8 @@ struct livedata_egt_s {
 	};
 };
 
+static_assert(sizeof(livedata_egt_s) == 16);
+
 // for all board. in case of no EGT - returns NULL
 const struct livedata_egt_s * getEgtLiveDataStructAddr(const int ch);
 

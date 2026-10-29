@@ -16,6 +16,8 @@ struct livedata_common_s {
 	};
 };
 
+static_assert(sizeof(livedata_common_s) == 32);
+
 /* +32 offset */
 struct livedata_afr_s {
 	union {
@@ -38,6 +40,8 @@ struct livedata_afr_s {
 		uint8_t pad[32];
 	};
 };
+
+static_assert(sizeof(livedata_afr_s) == 32);
 
 /* update functions */
 void SamplingUpdateLiveData();
