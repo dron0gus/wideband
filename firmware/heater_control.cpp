@@ -226,6 +226,14 @@ float HeaterControllerBase::GetVoltageForState(HeaterState state, float sensorEs
             // Negated because lower resistance -> hotter
 
             // TODO: heater PID should operate on temperature, not ESR
+
+            // Don't use PID when ESR is invalid (too low) - can happen during rich/lean transients
+            // Use nominal voltage instead to maintain temperature stability
+            if (sensorEsr < 20)
+            {
+                return 7.5f;
+            }
+
             return 7.5f - m_pid.GetOutput(m_targetEsr, sensorEsr);
         case HeaterState::Stopped:
             // Something has gone wrong, turn off the heater.
