@@ -225,16 +225,21 @@ void HeaterControllerBase::Update(const ISampler& sampler, HeaterAllow heaterAll
 
     // Run the state machine
     heaterState = GetNextState(heaterState, heaterAllowState, heaterSupplyVoltage, sensorTemperature);
-    float heaterVoltage = GetVoltageForState(heaterState, sensorEsr);
+    heaterVoltage = GetVoltageForState(heaterState, sensorEsr);
 
-    // Limit to 12 volts
+    // Clamp before squaring: a negative cooling request must never add heat.
+    if (heaterVoltage < 0) {
+        heaterVoltage = 0;
+    }
+
+    // Limit to 12 volts and the available supply.
     if (heaterVoltage > 12) {
         heaterVoltage = 12;
     }
-
-    // Very low supply voltage -> avoid divide by zero or very high duty
-    if (heaterSupplyVoltage < 3) {
-        heaterSupplyVoltage = 12;
+    if (heaterSupplyVoltage < 1.0f) {
+        heaterVoltage = 0;
+    } else if (heaterVoltage > heaterSupplyVoltage) {
+        heaterVoltage = heaterSupplyVoltage;
     }
 
     // duty = (V_eff / V_batt) ^ 2

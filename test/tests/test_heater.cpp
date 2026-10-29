@@ -2,6 +2,7 @@
 #include <gmock/gmock.h>
 
 #include "heater_control.h"
+#include "sampling.h"
 
 struct MockHeater : public HeaterControllerBase
 {
@@ -174,4 +175,91 @@ TEST(HeaterStateMachine, TerminalStates)
     Timer::advanceMockTime(501 * 1000);
 
     EXPECT_EQ(HeaterState::Stopped, dut.GetNextState(HeaterState::Stopped, HeaterAllow::Allowed, 12, 780));
+}
+
+struct MockHeaterSampler : public ISampler
+{
+    MOCK_METHOD(float, GetNernstDc, (), (const, override));
+    MOCK_METHOD(float, GetNernstAc, (), (const, override));
+    MOCK_METHOD(float, GetPumpNominalCurrent, (), (const, override));
+#ifdef HEATER_INPUT_DIVIDER
+    MOCK_METHOD(float, GetInternalHeaterVoltage, (), (const, override));
+#endif
+    MOCK_METHOD(float, GetSensorTemperature, (), (const, override));
+    MOCK_METHOD(float, GetSensorInternalResistance, (), (const, override));
+};
+
+TEST(HeaterOutput, NegativeVoltageDoesNotBecomePositiveDuty)
+{
+    using namespace testing;
+    Timer::setMockTime(0);
+    NiceMock<MockHeater> dut;
+    NiceMock<MockHeaterSampler> sampler;
+    dut.Configure(730, 80);
+    Timer::advanceMockTime(501 * 1000); // Production supply stabilization
+    ON_CALL(sampler, GetSensorTemperature()).WillByDefault(Return(750));
+    ON_CALL(sampler, GetSensorInternalResistance()).WillByDefault(Return(80));
+    dut.Update(sampler, HeaterAllow::Allowed); // warmup
+    dut.Update(sampler, HeaterAllow::Allowed); // closed loop
+    EXPECT_FLOAT_EQ(7.5f, dut.GetHeaterEffectiveVoltage());
+
+    // A sudden lower resistance produces a negative PID voltage request.
+    ON_CALL(sampler, GetSensorInternalResistance()).WillByDefault(Return(35));
+    EXPECT_CALL(dut, SetDuty(0)).Times(1);
+    dut.Update(sampler, HeaterAllow::Allowed);
+    EXPECT_FLOAT_EQ(0, dut.GetHeaterEffectiveVoltage());
+}
+
+extern float testRemoteBatteryVoltage;
+
+TEST(HeaterOutput, VoltageAndTelemetryAreLimitedToSupply)
+{
+    using namespace testing;
+    Timer::setMockTime(0);
+    NiceMock<MockHeater> dut;
+    NiceMock<MockHeaterSampler> sampler;
+    dut.Configure(730, 80);
+    Timer::advanceMockTime(501 * 1000); // Production supply stabilization
+    ON_CALL(sampler, GetSensorTemperature()).WillByDefault(Return(750));
+    ON_CALL(sampler, GetSensorInternalResistance()).WillByDefault(Return(200));
+    testRemoteBatteryVoltage = 10;
+    dut.Update(sampler, HeaterAllow::Allowed);
+    EXPECT_CALL(dut, SetDuty(1)).Times(1);
+    dut.Update(sampler, HeaterAllow::Allowed);
+    EXPECT_FLOAT_EQ(10, dut.GetHeaterEffectiveVoltage());
+
+    testRemoteBatteryVoltage = 24;
+    EXPECT_CALL(dut, SetDuty(0)).Times(1);
+    dut.Update(sampler, HeaterAllow::Allowed);
+    EXPECT_FLOAT_EQ(0, dut.GetHeaterEffectiveVoltage());
+    testRemoteBatteryVoltage = 13.7f;
+}
+
+TEST(HeaterOutput, LowSupplyDoesNotUseNominalVoltage)
+{
+    using namespace testing;
+    Timer::setMockTime(0);
+    NiceMock<MockHeater> dut;
+    NiceMock<MockHeaterSampler> sampler;
+    dut.Configure(780, 300);
+    ON_CALL(sampler, GetSensorTemperature()).WillByDefault(Return(25));
+    ON_CALL(sampler, GetSensorInternalResistance()).WillByDefault(Return(10000));
+
+    for (float supply : {0.0f, 0.5f, 0.99f}) {
+        testRemoteBatteryVoltage = supply;
+        EXPECT_CALL(dut, SetDuty(0)).Times(1);
+        dut.Update(sampler, HeaterAllow::Allowed);
+        EXPECT_FLOAT_EQ(0, dut.GetHeaterEffectiveVoltage());
+        EXPECT_EQ(HeaterState::Preheat, dut.GetHeaterState());
+        Mock::VerifyAndClearExpectations(&dut);
+    }
+
+    // Production permits 2 V preheat below its warmup supply threshold.
+    // Duty must use the actual supply, not the former 12 V substitution.
+    testRemoteBatteryVoltage = 2;
+    EXPECT_CALL(dut, SetDuty(1)).Times(1);
+    dut.Update(sampler, HeaterAllow::Allowed);
+    EXPECT_FLOAT_EQ(2, dut.GetHeaterEffectiveVoltage());
+    EXPECT_EQ(HeaterState::Preheat, dut.GetHeaterState());
+    testRemoteBatteryVoltage = 13.7f;
 }

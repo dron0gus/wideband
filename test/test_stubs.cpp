@@ -5,7 +5,9 @@ void SetStatus(int, wbo::Status)
 {
 }
 
+float testRemoteBatteryVoltage = 13.7f;
+
 float GetRemoteBatteryVoltage()
 {
-    return 0;
+    return testRemoteBatteryVoltage;
 }
