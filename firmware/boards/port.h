@@ -16,6 +16,8 @@ struct AnalogChannelResult
     float HeaterSupplyVoltage;
     /* If measured voltage is too close to ground or Vref assume value is clamped */
     bool NernstClamped;
+    /* True if ungained Nernst input was used because 3x gained input was saturated/clamped */
+    bool NernstUngained;
 };
 
 struct AnalogResult

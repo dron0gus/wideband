@@ -155,12 +155,17 @@ AnalogResult AnalogSampleFinish()
 
     for (int i = 0; i < AFR_CHANNELS; i++) {
         res.ch[i].NernstClamped = false;
+        res.ch[i].NernstUngained = false;
+        // Channel 0 = LEFT, Channel 1 = RIGHT
+        // Gained: Ch0=idx 3 (L_Un_3x), Ch1=idx 1 (R_Un_3x)
         float NernstRaw = AverageSamples(adcBuffer, (i == 0) ? 3 : 1);
         if (!isClamped(NernstRaw)) {
             /* not clamped */
             res.ch[i].NernstVoltage = (NernstRaw - NERNST_INPUT_OFFSET) * (1.0 / NERNST_INPUT_GAIN);
         } else {
             /* Clamped, use ungained input */
+            res.ch[i].NernstUngained = true;
+            // Ungained: Ch0=idx 9 (L_Un_sense), Ch1=idx 8 (R_Un_sense)
             NernstRaw = AverageSamples(adcBuffer, (i == 0) ? 9 : 8);
             if (isClamped(NernstRaw)) {
                 res.ch[i].NernstClamped = true;

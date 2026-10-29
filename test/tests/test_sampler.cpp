@@ -18,7 +18,7 @@ TEST(Sampler, TestDc)
 {
     Sampler dut;
 
-    AnalogChannelResult data;
+    AnalogChannelResult data{};
     data.NernstVoltage = 0.45f;
     data.PumpCurrentVoltage = 1.75f;
     data.NernstClamped = false;
@@ -39,12 +39,12 @@ TEST(Sampler, TestAc)
 {
     Sampler dut;
 
-    AnalogChannelResult dataLow;
+    AnalogChannelResult dataLow{};
     dataLow.NernstVoltage = 0.45f - 0.1f;
     dataLow.PumpCurrentVoltage = 1.75f;
     dataLow.NernstClamped = false;
 
-    AnalogChannelResult dataHigh;
+    AnalogChannelResult dataHigh{};
     dataHigh.NernstVoltage = 0.45f + 0.1f;
     dataHigh.PumpCurrentVoltage = 1.75f;
     dataHigh.NernstClamped = false;

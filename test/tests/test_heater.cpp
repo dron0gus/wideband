@@ -194,6 +194,8 @@ struct MockHeaterSampler : public ISampler
     MOCK_METHOD(float, GetInternalHeaterVoltage, (), (const, override));
     MOCK_METHOD(float, GetSensorTemperature, (), (const, override));
     MOCK_METHOD(float, GetSensorInternalResistance, (), (const, override));
+    MOCK_METHOD(bool, GetNernstClamped, (), (const, override));
+    MOCK_METHOD(bool, GetNernstUngained, (), (const, override));
 };
 
 TEST(HeaterOutput, NegativeVoltageDoesNotBecomePositiveDuty)

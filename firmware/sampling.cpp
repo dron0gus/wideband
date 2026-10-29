@@ -97,6 +97,16 @@ float Sampler::GetSensorInternalResistance() const
     return totalEsr - VM_RESISTOR_VALUE;
 }
 
+bool Sampler::GetNernstClamped() const
+{
+    return nernstClamped > 0;
+}
+
+bool Sampler::GetNernstUngained() const
+{
+    return nernstUngained > 0;
+}
+
 constexpr float f_abs(float x)
 {
     return x > 0 ? x : -x;
@@ -111,6 +121,13 @@ void Sampler::ApplySample(AnalogChannelResult& result, float virtualGroundVoltag
         nernstClamped = 100;
     } else if (nernstClamped) {
         nernstClamped--;
+    }
+
+    // Track if ungained input was used
+    if (result.NernstUngained) {
+        nernstUngained = 100;
+    } else if (nernstUngained) {
+        nernstUngained--;
     }
 
     // r2_opposite_phase estimates where the previous sample would be had we not been toggling

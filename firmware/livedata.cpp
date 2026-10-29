@@ -39,6 +39,8 @@ void SamplingUpdateLiveData()
         data->esr = sampler.GetSensorInternalResistance();
         data->fault = (uint8_t)GetCurrentFault(ch);
         data->heaterState = (uint8_t)GetHeaterState(ch);
+        data->nernstClamped = sampler.GetNernstClamped() ? 1 : 0;
+        data->nernstUngained = sampler.GetNernstUngained() ? 1 : 0;
         /* TODO: add GetPumpOutputDuty() */
         if (voltage > vbat)
             vbat = voltage;

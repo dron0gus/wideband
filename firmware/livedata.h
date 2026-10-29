@@ -36,6 +36,8 @@ struct livedata_afr_s {
 			int16_t nernstV;
 			uint8_t fault; // See wbo::Fault
 			uint8_t heaterState;
+			uint8_t nernstClamped;  // 1 if even ungained Nernst input is clamped/saturated
+			uint8_t nernstUngained; // 1 if ungained input was used (3x gained was saturated)
 		} __attribute__((packed));
 		uint8_t pad[32];
 	};

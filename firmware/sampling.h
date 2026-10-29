@@ -13,6 +13,8 @@ struct ISampler
     virtual float GetInternalHeaterVoltage() const = 0;
     virtual float GetSensorTemperature() const = 0;
     virtual float GetSensorInternalResistance() const = 0;
+    virtual bool GetNernstClamped() const = 0;
+    virtual bool GetNernstUngained() const = 0;
 };
 
 struct AnalogChannelResult;
@@ -30,6 +32,8 @@ public:
     float GetInternalHeaterVoltage() const override;
     float GetSensorTemperature() const override;
     float GetSensorInternalResistance() const override;
+    bool GetNernstClamped() const override;
+    bool GetNernstUngained() const override;
 
 private:
     float r_2 = 0;
@@ -40,6 +44,7 @@ private:
     float nernstV = 0;
     float pumpCurrentSenseVoltage = 0;
     int nernstClamped = 0;
+    int nernstUngained = 0;
 
 #ifdef BATTERY_INPUT_DIVIDER
     float internalHeaterVoltage = 0;
