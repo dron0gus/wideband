@@ -64,7 +64,9 @@ static DACConfig pumpDacConfig = {
 
 static Dac pumpDacs[] {
     Dac(PUMP_DAC_DAC_DEVICE_0),
+#if (AFR_CHANNELS > 1)
     Dac(PUMP_DAC_DAC_DEVICE_1)
+#endif
 };
 
 static void SetPumpVoltage(int ch, float volts)
@@ -87,7 +89,9 @@ void InitPumpDac()
 #endif
 #ifdef PUMP_DAC_DAC_DEVICE_0
     pumpDacs[0].Start(pumpDacConfig);
+#if (AFR_CHANNELS > 1)
     pumpDacs[1].Start(pumpDacConfig);
+#endif
 #endif
 
     for (int ch = 0; ch < AFR_CHANNELS; ch++)

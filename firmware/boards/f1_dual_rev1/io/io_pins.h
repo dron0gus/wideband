@@ -4,12 +4,23 @@
 #define LED_BLUE_PIN 8
 #define LL_LED_BLUE_PIN LL_GPIO_PIN_8
 
+#ifdef WIDEBAND_SINGLE
+// The only fitted LED is blue on PA8; reserve it for sensor status.
+#define LED_STATUS_PORT LED_BLUE_PORT
+#define LED_STATUS_PIN LED_BLUE_PIN
+#else
 // Left
 #define LED_GREEN_PORT GPIOB
 #define LED_GREEN_PIN 13
 // Rights TODO
 #define LED_R_GREEN_PORT GPIOC
 #define LED_R_GREEN_PIN 1
+
+#define LED_STATUS_PORT LED_GREEN_PORT
+#define LED_STATUS_PIN LED_GREEN_PIN
+#define LED_COMM_PORT LED_BLUE_PORT
+#define LED_COMM_PIN LED_BLUE_PIN
+#endif
 
 // Communication - UART
 #define UART_GPIO_PORT				GPIOA
@@ -53,16 +64,19 @@
 #define PUMP_DAC_DAC_CHANNEL_0		1	/* PA5 - DAC_OUT2 - left */
 #define PUMP_DAC_DAC_CHANNEL_1		0 	/* PA4 - DAC_OUT1 - right */
 
-// TIM1 - DAC for AUX outputs
+// TIM8 - DAC for AUX outputs
 #define AUXOUT_DAC_PWM_DEVICE		PWMD8
-// PC6 - TIM1_CH2N
+// PC6 - TIM8_CH1
 #define AUXOUT_DAC_PWM_CHANNEL_0	0
-// Riple cancelation output (should be inverted)
+// PC7 - TIM8_CH2: ripple cancellation output (inverted)
 #define AUXOUT_DAC_PWM_CHANNEL_0_NC 1
-// PC8 - TIM1_CH3N
+#ifndef WIDEBAND_SINGLE
+// Only the dual board has a second AUX output.
+// PC8 - TIM8_CH3
 #define AUXOUT_DAC_PWM_CHANNEL_1	2
-// Riple cancelation output (should be inverted)
+// PC9 - TIM8_CH4: ripple cancellation output (inverted)
 #define AUXOUT_DAC_PWM_CHANNEL_1_NC	3
+#endif
 
 #define ID_SEL1_PORT				GPIOC
 #define ID_SEL1_PIN					12
