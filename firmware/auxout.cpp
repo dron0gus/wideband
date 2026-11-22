@@ -86,7 +86,7 @@ void SetAuxDac(int channel, float voltage)
 
     auxDac.SetDuty(auxOutPwmCh[channel], duty);
     // Ripple cancelation channel
-    if (auxOutPwmChN[channel >= 0]) {
+    if (auxOutPwmChN[channel] >= 0) {
         auxDac.SetDuty(auxOutPwmChN[channel], duty);
     }
 }
