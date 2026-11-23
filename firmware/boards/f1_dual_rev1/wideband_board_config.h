@@ -3,9 +3,14 @@
 // TS settings
 #define TS_SIGNATURE "rusEFI 2024.02.11.wideband_dual"
 
-// This board implements two channels
+// The simplified board retains the left LSU channel and has no EGT inputs.
+#ifdef WIDEBAND_SINGLE
+#define AFR_CHANNELS 1
+#define EGT_CHANNELS 0
+#else
 #define AFR_CHANNELS 2
 #define EGT_CHANNELS 2
+#endif
 
 // Fundamental board constants
 #define VCC_VOLTS (3.3f)
@@ -89,7 +94,11 @@
 // Serial connection over BT module
 // enable BT module setup attempt
 #define BT_SERIAL_OVER_JDY33	TRUE
+#ifdef WIDEBAND_SINGLE
+#define BT_BROADCAST_NAME		"RusEFI WBO x1"
+#else
 #define BT_BROADCAST_NAME		"RusEFI WBO x2"
+#endif
 
 // *******************************
 //   Indication: per channel status LED + communication LED

@@ -82,7 +82,7 @@
  * PA5  - L_Ip_dac                  (analog out)
  * PA6  - R_AUX_ADC                 (analog in)
  * PA7  - L_AUX_ADC                 (analog in)
- * PA8  - LED_GREEN                 (output pushpull, 2 MHz)
+ * PA8  - LED_BLUE                  (output pushpull, 2 MHz)
  * PA9  - UART_TX                   (output pushpull, alternate, 10 MHz)
  * PA10 - UART_RX                   (digital input, alternate)
  * PA11 - CAN_RX                    (digital input, alternate)
@@ -115,7 +115,12 @@
  * PB15 - R_OUT_en                  (output pushpull, 2 MHz)
  */
 #define VAL_GPIOBCRL            0xAAB8B200      /*  PB7...PB0 */
+#ifdef WIDEBAND_SINGLE
+/* PB13 has no LED on the single-channel board: leave it as an input. */
+#define VAL_GPIOBCRH            0x2244348B      /* PB15...PB8 */
+#else
 #define VAL_GPIOBCRH            0x2224348B      /* PB15...PB8 */
+#endif
 #define VAL_GPIOBODR            0x00003FFF
 
 /*
@@ -137,7 +142,12 @@
  * PC14 - SPI_CS1                   (output pushpull, 2 MHz)
  * PC15 - SPI_CS0                   (output pushpull, 2 MHz)
  */
+#ifdef WIDEBAND_SINGLE
+/* PC1 has no LED on the single-channel board: leave it as an input. */
+#define VAL_GPIOCCRL            0xBB000040      /*  PC7...PC0 */
+#else
 #define VAL_GPIOCCRL            0xBB000020      /*  PC7...PC0 */
+#endif
 #define VAL_GPIOCCRH            0x224489BB      /* PC15...PC8 */
 #define VAL_GPIOCODR            0x0000FFFF
 

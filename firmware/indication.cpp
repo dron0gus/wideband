@@ -23,14 +23,14 @@ struct indicationThreadData {
 };
 
 indicationThreadData indData[] = {
-	{0, PAL_LINE(LED_GREEN_PORT, LED_GREEN_PIN)},
-#ifdef LED_R_GREEN_PORT
+	{0, PAL_LINE(LED_STATUS_PORT, LED_STATUS_PIN)},
+#if (AFR_CHANNELS > 1) && defined(LED_R_GREEN_PORT)
 	{1, PAL_LINE(LED_R_GREEN_PORT, LED_R_GREEN_PIN)},
 #endif
 };
 
 static THD_WORKING_AREA(waIndicationThread, 128);
-#ifdef LED_R_GREEN_PORT
+#if (AFR_CHANNELS > 1) && defined(LED_R_GREEN_PORT)
 static THD_WORKING_AREA(waIndicationThread2, 128);
 #endif
 
@@ -45,7 +45,7 @@ static void IndicationThread(void *ptr)
 
         if (fault == Fault::None)
         {
-            // Green is blinking
+            // Status LED is blinking
             palToggleLine(data->line);
 
             // Slow blink if closed loop, fast if not
@@ -59,7 +59,7 @@ static void IndicationThread(void *ptr)
             // Blink out the error code
             for (int i = 0; i < 2 * static_cast<int>(fault); i++)
             {
-                // Blue is blinking
+                // Status LED is blinking
                 palToggleLine(data->line);
 
                 // fast blink
@@ -74,7 +74,7 @@ static void IndicationThread(void *ptr)
 void InitIndication()
 {
     chThdCreateStatic(waIndicationThread, sizeof(waIndicationThread), NORMALPRIO, IndicationThread, &indData[0]);
-#ifdef LED_R_GREEN_PORT
+#if (AFR_CHANNELS > 1) && defined(LED_R_GREEN_PORT)
     chThdCreateStatic(waIndicationThread2, sizeof(waIndicationThread2), NORMALPRIO, IndicationThread, &indData[1]);
 #endif
 }
@@ -82,6 +82,7 @@ void InitIndication()
 /* Can be calles from two TS channels. */
 void onDataArrived(bool status)
 {
+#ifdef LED_COMM_PORT
 	/* to avoid blinking when two TS channels available and only one is communicating
 	 * another one will call this function with status = false every timeout */
 	/* TODO: total crap, rework */
@@ -98,10 +99,14 @@ void onDataArrived(bool status)
 	}
 
 	if (filter) {
-		palSetPad(LED_BLUE_PORT, LED_BLUE_PIN);
+		palSetPad(LED_COMM_PORT, LED_COMM_PIN);
 	} else {
-		palClearPad(LED_BLUE_PORT, LED_BLUE_PIN);
+		palClearPad(LED_COMM_PORT, LED_COMM_PIN);
 	}
+#else
+    // Boards with only a status LED have no communication indication.
+    (void)status;
+#endif
 }
 
 #else
