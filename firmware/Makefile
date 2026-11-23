@@ -101,7 +101,8 @@ PROJECT = wideband
 CHIBIOS  := ChibiOS
 CONFDIR  := $(BOARDDIR)
 BUILDDIR := ./build
-DEPDIR   := ./.dep
+# ChibiOS includes every entry in DEPDIR, so use a leaf directory per board.
+DEPDIR   := ./.dep/$(BOARD)
 FIRMWARE_DIR = .
 
 ifeq ("$(wildcard $(CHIBIOS)/os/license/license.mk)","")

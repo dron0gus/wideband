@@ -24,7 +24,7 @@ echo ""
 echo "Build application"
 # make clean
 BUILDDIR=${BUILDDIR:-build}
-DEPDIR=${DEPDIR:-.dep}
+DEPDIR=${DEPDIR:-.dep/${BOARD}}
 make -j12 BOARD=${BOARD} BUILDDIR="${BUILDDIR}" DEPDIR="${DEPDIR}" || exit 1
 
 DELIVER_DIR=${DELIVER_DIR:-deliver/${BOARD}}
