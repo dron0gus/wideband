@@ -145,6 +145,11 @@ CWARN = -Wall -Wextra -Wstrict-prototypes -pedantic -Wmissing-prototypes -Wold-s
 # Define C++ warning options here
 CPPWARN = -Wall -Wextra -Werror -Wno-error=sign-compare
 
+# Older GoogleTest triggers this diagnostic on newer Apple Clang.
+ifeq ($(IS_MAC),yes)
+  CPPWARN += -Wno-error=character-conversion
+endif
+
 #
 # Compiler settings
 ##############################################################################
