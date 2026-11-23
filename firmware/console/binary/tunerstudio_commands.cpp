@@ -51,9 +51,12 @@ void TunerStudio::handleScatteredReadCommand(TsChannelBase* tsChannel) {
 	uint8_t *buffer = (uint8_t *)tsChannel->scratchBuffer;
 	tsChannel->writeHeader(TS_RESPONSE_OK, highSpeedTotalSize);
 	for (size_t i = 0; i < highSpeedChunks; i++) {
-		chDbgAssert(NULL != highSpeedPtrs[i], "NULL pointer in scatter list");
-		// copy to temp buffer to avoid changes before transmission, couse it can affect CRC
-		memcpy(buffer, highSpeedPtrs[i], highSpeedSizes[i]);
+		// Snapshot live data for the CRC; absent fragments retain their requested size.
+		if (highSpeedPtrs[i]) {
+			memcpy(buffer, highSpeedPtrs[i], highSpeedSizes[i]);
+		} else {
+			memset(buffer, 0, highSpeedSizes[i]);
+		}
 		tsChannel->writeBody(buffer, highSpeedSizes[i]);
 	}
 	tsChannel->writeTail();
@@ -103,16 +106,16 @@ void TunerStudio::handleScatterListWriteCommand(TsChannelBase* tsChannel, uint16
 		do {
 			size_t availSize = getRangePtr(&ptr, getFragments(), offset, size);
 
-			/* note: no need to check ptr for NULL */
 			if ((highSpeedChunks == 0) ||	/* first chunk */
 				((highSpeedChunks > 0) &&
-				 (highSpeedPtrs[highSpeedChunks - 1] + highSpeedSizes[highSpeedChunks - 1] != ptr))) /* or not contiguous chunks */ {
+				 (!highSpeedPtrs[highSpeedChunks - 1] || !ptr ||
+				  highSpeedPtrs[highSpeedChunks - 1] + highSpeedSizes[highSpeedChunks - 1] != ptr))) /* or not contiguous chunks */ {
 				highSpeedPtrs[highSpeedChunks] = ptr;
-				highSpeedSizes[highSpeedChunks] = size;
+				highSpeedSizes[highSpeedChunks] = availSize;
 				highSpeedChunks++;
 			} else {
 				/* unite */
-				highSpeedSizes[highSpeedChunks - 1] += size;
+				highSpeedSizes[highSpeedChunks - 1] += availSize;
 			}
 		size -= availSize;
 		offset += availSize;
