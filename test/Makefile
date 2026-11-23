@@ -81,6 +81,17 @@ endif
 
 USE_CPPOPT += -DMOCK_TIMER
 
+# Append coverage flags after the default language/compiler options are set.
+ifeq ($(COVERAGE),yes)
+  ifeq ($(IS_CLANG),1)
+    COVERAGE_FLAGS := -fprofile-instr-generate -fcoverage-mapping
+  else
+    COVERAGE_FLAGS := --coverage
+  endif
+  USE_COPT += $(COVERAGE_FLAGS)
+  USE_CPPOPT += $(COVERAGE_FLAGS)
+endif
+
 # Enable address sanitizer for C++ files, but not on Windows since x86_64-w64-mingw32-g++ doesn't support it.
 # only c++ because lua does some things asan doesn't like, but don't actually cause overruns.
 ifeq ($(SANITIZE),yes)
@@ -147,6 +158,11 @@ CWARN = -Wall -Wextra -Wstrict-prototypes -pedantic -Wmissing-prototypes -Wold-s
 # Define C++ warning options here
 CPPWARN = -Wall -Wextra -Werror -Wno-error=sign-compare
 
+# Older GoogleTest triggers this diagnostic on newer Apple Clang.
+ifeq ($(IS_MAC),yes)
+  CPPWARN += -Wno-error=character-conversion
+endif
+
 #
 # Compiler settings
 ##############################################################################
@@ -198,6 +214,10 @@ ULIBS = -lm
 
 ifeq ($(SANITIZE),yes)
 	ULIBS += -fsanitize=address -fsanitize=undefined
+endif
+
+ifeq ($(COVERAGE),yes)
+	ULIBS += $(COVERAGE_FLAGS)
 endif
 
 #
