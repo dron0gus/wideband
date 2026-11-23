@@ -45,11 +45,13 @@ static PWMConfig auxPwmConfig = {
 static void auxDacFillPwmConfig(void)
 {
     auxPwmConfig.channels[AUXOUT_DAC_PWM_CHANNEL_0].mode = AUXOUT_DAC_PWM_OUTPUT_MODE;
+#if (AFR_CHANNELS > 1)
     auxPwmConfig.channels[AUXOUT_DAC_PWM_CHANNEL_1].mode = AUXOUT_DAC_PWM_OUTPUT_MODE;
+#endif
 #ifdef AUXOUT_DAC_PWM_CHANNEL_0_NC
     auxPwmConfig.channels[AUXOUT_DAC_PWM_CHANNEL_0_NC].mode = AUXOUT_DAC_PWM_NC_OUTPUT_MODE;
 #endif
-#ifdef AUXOUT_DAC_PWM_CHANNEL_1_NC
+#if (AFR_CHANNELS > 1) && defined(AUXOUT_DAC_PWM_CHANNEL_1_NC)
     auxPwmConfig.channels[AUXOUT_DAC_PWM_CHANNEL_1_NC].mode = AUXOUT_DAC_PWM_NC_OUTPUT_MODE;
 #endif
 }
@@ -86,7 +88,7 @@ void SetAuxDac(int channel, float voltage)
 
     auxDac.SetDuty(auxOutPwmCh[channel], duty);
     // Ripple cancelation channel
-    if (auxOutPwmChN[channel >= 0]) {
+    if (auxOutPwmChN[channel] >= 0) {
         auxDac.SetDuty(auxOutPwmChN[channel], duty);
     }
 }
@@ -127,15 +129,21 @@ static float AuxGetInputSignal(AuxOutputMode sel)
     {
         case AuxOutputMode::Afr0:
             return 14.7f * GetLambda(0);
+#if (AFR_CHANNELS > 1)
         case AuxOutputMode::Afr1:
             return 14.7f * GetLambda(1);
+#endif
         case AuxOutputMode::Lambda0:
             return GetLambda(0);
+#if (AFR_CHANNELS > 1)
         case AuxOutputMode::Lambda1:
             return GetLambda(1);
-#if HAL_USE_SPI
+#endif
+#if (EGT_CHANNELS > 0)
         case AuxOutputMode::Egt0:
             return getEgtDrivers()[0].temperature;
+#endif
+#if (EGT_CHANNELS > 1)
         case AuxOutputMode::Egt1:
             return getEgtDrivers()[1].temperature;
 #endif
@@ -175,7 +183,9 @@ void InitAuxDac()
     auxDac.Start(auxPwmConfig);
 
     SetAuxDac(0, 0.0);
+#if (AFR_CHANNELS > 1)
     SetAuxDac(1, 0.0);
+#endif
 #endif
 #if defined(AUXOUT_DAC_DEVICE)
     auxDac.Start(auxDacConfig);

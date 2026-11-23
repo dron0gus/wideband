@@ -11,6 +11,7 @@ void PortPrepareAnalogSampling()
     adcStart(&ADCD1, nullptr);
 }
 
+// Keep the full dual-board scan, including unused inputs, to preserve ADC timing.
 #define ADC_CHANNEL_COUNT 10
 #define ADC_SAMPLE ADC_SAMPLE_7P5
 
@@ -105,10 +106,12 @@ static float GetMaxSample(adcsample_t* buffer, size_t idx)
 }
 
 static float l_heater_voltage = 0;
+#if (AFR_CHANNELS > 1)
 static float r_heater_voltage = 0;
+static bool r_heater;
+#endif
 
 static bool l_heater;
-static bool r_heater;
 
 void AnalogSampleStart()
 {
@@ -116,7 +119,9 @@ void AnalogSampleStart()
      * TODO: keep heater voltage measurement for optional source for pwm calculation
      * TODO: add aux output voltage measurement for diagnostic (use slow ADC?) */
     l_heater = !palReadPad(L_HEATER_PORT, L_HEATER_PIN);
+#if (AFR_CHANNELS > 1)
     r_heater = !palReadPad(R_HEATER_PORT, R_HEATER_PIN);
+#endif
 
     adcStartConversion(&ADCD1, &convGroup, adcBuffer, ADC_OVERSAMPLE);
 }
@@ -126,17 +131,19 @@ AnalogResult AnalogSampleFinish()
     adcDoneSemaphore.wait(TIME_INFINITE);
 
     bool l_heater_new = !palReadPad(L_HEATER_PORT, L_HEATER_PIN);
-    bool r_heater_new = !palReadPad(R_HEATER_PORT, R_HEATER_PIN);
 
     if (l_heater && l_heater_new)
     {
         l_heater_voltage = GetMaxSample(adcBuffer, 6) / HEATER_INPUT_DIVIDER;
     }
 
+#if (AFR_CHANNELS > 1)
+    bool r_heater_new = !palReadPad(R_HEATER_PORT, R_HEATER_PIN);
     if (r_heater && r_heater_new)
     {
         r_heater_voltage = GetMaxSample(adcBuffer, 7) / HEATER_INPUT_DIVIDER;
     }
+#endif
 
     AnalogResult res;
 
@@ -158,9 +165,11 @@ AnalogResult AnalogSampleFinish()
     /* left */
     res.ch[0].PumpCurrentVoltage = AverageSamples(adcBuffer, 2);
     res.ch[0].HeaterSupplyVoltage = l_heater_voltage;
+#if (AFR_CHANNELS > 1)
     /* right */
     res.ch[1].PumpCurrentVoltage = AverageSamples(adcBuffer, 0);
     res.ch[1].HeaterSupplyVoltage = r_heater_voltage;
+#endif
 
     return res;
 }
